@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.blueprint import router
 from app.user import user_router
 app = FastAPI()
 
