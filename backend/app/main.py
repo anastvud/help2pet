@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.user import user_router
+
+from app.timeslot import timeslot_router
+
 app = FastAPI()
 
 app.add_middleware(
@@ -14,7 +17,8 @@ app.add_middleware(
 
 
 # include router
-app.include_router(user_router, prefix="/user", tags=["user"])
+app.include_router(user_router, tags=["user"])
+app.include_router(timeslot_router, tags=["timeslot"])
 
 # Root endpoint
 @app.get("/")

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, constr
-from datetime import date
+from datetime import date, datetime
+from typing import Optional
 
 class UserBasicCreate(BaseModel):
     username: constr(max_length=40)
@@ -22,6 +23,7 @@ class PetsitterAdditionalInfo(BaseModel):
     pets: bool
     languages: constr(max_length=40)
 
+#TODO: update user
 
 class OwnerAdditionalInfo(BaseModel):
     zipcode: constr(max_length=5)
@@ -33,3 +35,12 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
+class TimeSlotCreate(BaseModel):
+    sitter_id: int
+    start_time: datetime
+    end_time: datetime
+
+class TimeSlotUpdate(BaseModel):
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+    is_booked: Optional[bool] = None

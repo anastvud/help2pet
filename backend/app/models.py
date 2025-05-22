@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, Integer, String
+from sqlalchemy import Boolean, Column, Date, Integer, String, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -44,3 +44,16 @@ class Owner(Base):
     area = Column(String(40), nullable=True)
     gender = Column(Boolean, nullable=True)
     pets = Column(String(255), nullable=True)
+
+class TimeSlot(Base):
+    __tablename__ = "timeslots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sitter_id = Column(Integer, ForeignKey("petsitters.id"), nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=False)
+    is_booked = Column(Boolean, default=False)
+
+    __table_args__ = (
+        UniqueConstraint("sitter_id", "start_time", "end_time", name="unique_timeslot"),
+    )
