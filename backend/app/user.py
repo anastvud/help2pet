@@ -6,7 +6,7 @@ from sqlalchemy import update
 from app.db import get_db
 from app.auth import hash_password, verify_password
 from app.models import Petsitter, Owner
-from app.schemas import UserBasicCreate, PetsitterAdditionalInfo, OwnerAdditionalInfo
+from app.schemas import UserBasicCreate, PetsitterAdditionalInfo, OwnerAdditionalInfo, UserLogin
 
 
 user_router = APIRouter()
@@ -131,12 +131,33 @@ async def complete_owner_registration(owner_id: int, additional_info: OwnerAddit
 
 
 
-# @user_router.post("/login")
-# async def login_user(user: UserLogin, db: AsyncSession = Depends(get_db)):
-#     result = await db.execute(select(User).where(User.username == user.username))
-#     user_db = result.scalar_one_or_none()
-#
-#     if not user_db or not verify_password(user.password, user_db.password):
-#         raise HTTPException(status_code=401, detail="Invalid username or password")
-#
-#     return {"message": f"Welcome, {user_db.name}!"}
+@user_router.post("/login/owner")
+async def login_owner(user: UserLogin, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Owner).where(Owner.username == user.username))
+    user_db = result.scalar_one_or_none()
+
+    if not user_db or not verify_password(user.password, user_db.password):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    return {"message": f"Welcome owner, {user_db.name}!"}
+
+
+@user_router.post("/login/petsitter")
+async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Petsitter).where(Petsitter.username == user.username))
+    user_db = result.scalar_one_or_none()
+
+    if not user_db or not verify_password(user.password, user_db.password):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    return {"message": f"Welcome petsitter, {user_db.name}!"}
+
+@user_router.post("/login/owner")
+async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Petsitter).where(Petsitter.username == user.username))
+    user_db = result.scalar_one_or_none()
+
+    if not user_db or not verify_password(user.password, user_db.password):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    return {"message": f"Welcome petsitter, {user_db.name}!"}
