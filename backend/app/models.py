@@ -1,5 +1,7 @@
-from sqlalchemy import Boolean, Column, Date, Integer, String, ForeignKey, DateTime, UniqueConstraint
+from sqlalchemy import Boolean, Column, Date, Integer, String, ForeignKey, DateTime, UniqueConstraint, func
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from app.utils import BookingStatus
 
 Base = declarative_base()
 
@@ -45,6 +47,9 @@ class Owner(Base):
     gender = Column(Boolean, nullable=True)
     pets = Column(String(255), nullable=True)
 
+    bookings = relationship("Booking", back_populates="owner")
+
+
 class TimeSlot(Base):
     __tablename__ = "timeslots"
 
@@ -54,6 +59,24 @@ class TimeSlot(Base):
     end_time = Column(DateTime, nullable=False)
     is_booked = Column(Boolean, default=False)
 
+    booking = relationship("Booking", back_populates="timeslot", uselist=False)
+
     __table_args__ = (
         UniqueConstraint("sitter_id", "start_time", "end_time", name="unique_timeslot"),
+    )
+
+class Booking(Base):
+    __tablename__ = "bookings"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    timeslot_id = Column(Integer, ForeignKey("timeslots.id"), unique=True, nullable=False)
+    owner_id = Column(Integer, ForeignKey("owners.id"), nullable=False)
+    status = Column(String(20), default="pending", nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    timeslot = relationship("TimeSlot", back_populates="booking")
+    owner = relationship("Owner", back_populates="bookings")
+
+    __table_args__ = (
+        UniqueConstraint('timeslot_id', name='uq_timeslot_id'),
     )

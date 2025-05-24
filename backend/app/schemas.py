@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, constr
 from datetime import date, datetime
 from typing import Optional
+from app.utils import BookingStatus
 
 class UserBasicCreate(BaseModel):
     username: constr(max_length=40)
@@ -44,3 +45,13 @@ class TimeSlotUpdate(BaseModel):
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
     is_booked: Optional[bool] = None
+
+class BookingUpdate(BaseModel):
+    status: Optional[str] = None
+    owner_id: Optional[int] = None
+    timeslot_id: Optional[int] = None
+
+class BookingCreate(BaseModel):
+    timeslot_id: int
+    owner_id: int
+    status: str = "confirmed"
