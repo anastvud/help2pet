@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ Import navigate
 import './form.css';
 
 function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // ✅ Initialize navigate
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,7 +27,7 @@ function Login() {
 
       if (response.ok) {
         setMessage(` ${data.message}`);
-        // optionally store token or user info here
+        navigate('/home'); // ✅ Redirect after success
       } else {
         setMessage(` ${data.detail || 'Login failed'}`);
       }

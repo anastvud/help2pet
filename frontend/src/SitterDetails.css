@@ -1,0 +1,67 @@
+/* SitterDetails.css */
+
+.sitter-details-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+
+.sitter-details-container h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.sitter-details-container p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.sitter-details-container strong {
+  color: #444;
+}
+
+.sitter-details-container textarea,
+.sitter-details-container input {
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.sitter-details-container button {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 1rem;
+  background-color: #0077cc;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.sitter-details-container button:hover {
+  background-color: #005fa3;
+}
+
+.sitter-details-container .react-calendar {
+  margin: 1rem 0;
+  border: none;
+}
+
+.sitter-details-container .react-calendar__tile--active {
+  background: #0077cc;
+  color: white;
+}
+
+.sitter-details-container .react-calendar__tile--disabled {
+  background-color: #eee;
+  color: #aaa;
+}

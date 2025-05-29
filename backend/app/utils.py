@@ -1,6 +1,6 @@
 from enum import Enum
-from fastapi_mail import FastMail, MessageSchema
-from fastapi_mail import ConnectionConfig
+# from fastapi_mail import FastMail, MessageSchema
+# from fastapi_mail import ConnectionConfig
 from app.config import settings
 
 
