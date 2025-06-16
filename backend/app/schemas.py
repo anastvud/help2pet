@@ -26,6 +26,9 @@ class PetsitterAdditionalInfo(BaseModel):
 
 #TODO: update user
 
+class NearbySearchRequest(BaseModel):
+    zipcode: str
+
 class OwnerAdditionalInfo(BaseModel):
     zipcode: constr(max_length=5)
     area: constr(max_length=40)
@@ -55,3 +58,15 @@ class BookingCreate(BaseModel):
     timeslot_id: int
     owner_id: int
     status: str = "confirmed"
+
+class PetsitterPublic(BaseModel):
+    name: str
+    surname: str
+    zipcode: Optional[str]
+    area: Optional[str]
+    price_hour: int
+    experience: Optional[str]
+    languages: Optional[str]
+    pets: Optional[bool]
+    drives: Optional[bool]
+    smoker: Optional[bool]

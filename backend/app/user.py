@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, APIRouter, HTTPException
+from fastapi import Query, Depends, APIRouter, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update
@@ -6,7 +6,7 @@ from sqlalchemy import update
 from app.db import get_db
 from app.auth import hash_password, verify_password
 from app.models import Petsitter, Owner
-from app.schemas import UserBasicCreate, PetsitterAdditionalInfo, OwnerAdditionalInfo, UserLogin
+from app.schemas import UserBasicCreate, PetsitterAdditionalInfo, OwnerAdditionalInfo, UserLogin, NearbySearchRequest, PetsitterPublic
 
 
 user_router = APIRouter()
@@ -161,3 +161,25 @@ async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
     return {"message": f"Welcome petsitter, {user_db.name}!"}
+
+@user_router.get("/petsitters/nearby")
+async def get_nearby_petsitters(data: NearbySearchRequest, db: AsyncSession = Depends(get_db)):
+    prefix = data.zipcode[:2]  # You can adjust the slicing logic based on your postcode structure
+    like_pattern = f"{prefix}%"  # e.g., "30%" to find nearby postcodes like "30-001", "30-050", etc.
+
+    result = await db.execute(
+        select(Petsitter).where(Petsitter.zipcode.like(like_pattern))
+    )
+    sitters = result.scalars().all()
+
+    return sitters
+
+@user_router.get("/petsitters/{petsitter_id}", response_model=PetsitterPublic)
+async def get_petsitter_profile(petsitter_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Petsitter).where(Petsitter.id == petsitter_id))
+    petsitter = result.scalar_one_or_none()
+
+    if not petsitter:
+        raise HTTPException(status_code=404, detail="Petsitter not found")
+
+    return petsitter
