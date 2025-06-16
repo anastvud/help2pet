@@ -5,6 +5,15 @@ from sqlalchemy.future import select
 from sqlalchemy import update
 from fastapi import Query
 
+
+
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from app.config import mail_conf
+
+from app.models import TimeSlot, Owner, Petsitter
+
+
+
 from app.models import Booking
 from app.schemas import BookingUpdate, BookingCreate
 from app.db import get_db
@@ -25,13 +34,53 @@ async def create_booking(booking: BookingCreate, db: AsyncSession = Depends(get_
     try:
         await db.commit()
         await db.refresh(new_booking)
-        return {"message": "Booking created", "id": new_booking.id}
+
+        # Fetch related data (owner, sitter, timeslot)
+        timeslot_result = await db.execute(select(TimeSlot).where(TimeSlot.id == new_booking.timeslot_id))
+        timeslot = timeslot_result.scalar_one_or_none()
+
+        owner_result = await db.execute(select(Owner).where(Owner.id == new_booking.owner_id))
+        owner = owner_result.scalar_one_or_none()
+
+        sitter_result = await db.execute(select(Petsitter).where(Petsitter.id == timeslot.sitter_id))
+        sitter = sitter_result.scalar_one_or_none()
+
+        if not all([owner, sitter, timeslot]):
+            raise HTTPException(status_code=500, detail="Related data not found for email notification")
+
+        # Format the email message
+        subject = "Booking Confirmation"
+        body = f"""
+        Hello,
+
+        A new booking has been confirmed.
+
+        Time Slot: {timeslot.start_time} - {timeslot.end_time}
+        Pet Owner: {owner.name} {owner.surname} ({owner.email})
+        Pet Sitter: {sitter.name} {sitter.surname} ({sitter.email})
+
+        Booking Status: {new_booking.status}
+        """
+
+        message = MessageSchema(
+            subject=subject,
+            recipients=[owner.email, sitter.email],
+            body=body,
+            subtype="plain"
+        )
+
+        fm = FastMail(mail_conf)
+        await fm.send_message(message)
+
+        return {"message": "Booking created and email sent", "id": new_booking.id}
+
     except IntegrityError:
         await db.rollback()
         raise HTTPException(
             status_code=400,
             detail="This timeslot is already booked or invalid owner/timeslot ID"
         )
+
 
 @booking_router.put("/bookings/modify/{booking_id}")
 async def update_booking(
