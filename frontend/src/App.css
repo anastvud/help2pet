@@ -32,3 +32,31 @@
 .btn:hover {
   background-color: #357bd8;
 }
+
+.dashboard {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+}
+
+.sitter-card {
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 10px;
+  width: 200px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.sitter-card:hover {
+  transform: scale(1.05);
+}
+
+.sitter-card img {
+  width: 100px;
+  border-radius: 50%;
+}

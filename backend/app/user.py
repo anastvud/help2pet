@@ -51,9 +51,9 @@ async def register_petsitter_basic(petsitter: UserBasicCreate, db: AsyncSession 
 
 @user_router.put("/register/petsitter/{petsitter_id}/complete")
 async def complete_petsitter_registration(
-        petsitter_id: int,
-        additional_info: PetsitterAdditionalInfo,
-        db: AsyncSession = Depends(get_db)
+    petsitter_id: int,
+    additional_info: PetsitterAdditionalInfo,
+    db: AsyncSession = Depends(get_db)
 ):
     # Check if petsitter exists
     result = await db.execute(
@@ -109,8 +109,14 @@ async def register_owner_basic(owner: UserBasicCreate, db: AsyncSession = Depend
 
 
 @user_router.put("/register/owner/{owner_id}/complete")
-async def complete_owner_registration(owner_id: int, additional_info: OwnerAdditionalInfo, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Owner).where(Owner.id == owner_id))
+async def complete_owner_registration(
+    owner_id: int,
+    additional_info: OwnerAdditionalInfo,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+        select(Owner).where(Owner.id == owner_id)
+    )
     owner = result.scalar_one_or_none()
 
     if not owner:
@@ -127,7 +133,7 @@ async def complete_owner_registration(owner_id: int, additional_info: OwnerAddit
         await db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-    return {"message": "Owner registration completed successfully"}
+    return {"message": "Owner info updated successfully"}
 
 
 
@@ -152,15 +158,6 @@ async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
 
     return {"message": f"Welcome petsitter, {user_db.name}!"}
 
-@user_router.post("/login/owner")
-async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Petsitter).where(Petsitter.username == user.username))
-    user_db = result.scalar_one_or_none()
-
-    if not user_db or not verify_password(user.password, user_db.password):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-
-    return {"message": f"Welcome petsitter, {user_db.name}!"}
 
 @user_router.get("/petsitters/nearby")
 async def get_nearby_petsitters(data: NearbySearchRequest, db: AsyncSession = Depends(get_db)):
