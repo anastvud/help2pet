@@ -6,9 +6,9 @@ function CompleteSitter() {
   const [sitterForm, setSitterForm] = useState({
     zipcode: '',
     area: '',
-    gender: '',       // boolean true/false
+    gender: '', // boolean true/false
     profession: '',
-    date_of_birth: '', // yyyy-mm-dd string
+    date_of_birth: '',
     price_hour: '',
     experience: '',
     smoker: false,
@@ -18,29 +18,53 @@ function CompleteSitter() {
   });
 
   const [message, setMessage] = useState(null);
-  const petsitterId = localStorage.getItem('userId');
   const navigate = useNavigate();
+  const petsitterId = localStorage.getItem('userId');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setSitterForm(prev => ({
+    setSitterForm((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const handleGenderChange = (e) => {
-    setSitterForm(prev => ({ ...prev, gender: e.target.value === 'true' }));
+    setSitterForm((prev) => ({ ...prev, gender: e.target.value === 'true' }));
+  };
+
+  const isFormComplete = () => {
+    const {
+      zipcode,
+      area,
+      gender,
+      profession,
+      date_of_birth,
+      price_hour,
+      experience,
+      languages,
+    } = sitterForm;
+
+    return (
+      zipcode.trim() !== '' &&
+      area.trim() !== '' &&
+      typeof gender === 'boolean' &&
+      profession.trim() !== '' &&
+      date_of_birth.trim() !== '' &&
+      price_hour.trim() !== '' &&
+      !isNaN(parseInt(price_hour, 10)) &&
+      experience.trim() !== '' &&
+      languages.trim() !== ''
+    );
   };
 
   const handleSubmit = async () => {
-    // Validate price_hour as integer
-    const price = parseInt(sitterForm.price_hour, 10);
-    if (isNaN(price)) {
-      setMessage('Price per hour must be a number');
+    if (!isFormComplete()) {
+      setMessage('Please complete all fields before submitting.');
       return;
     }
 
+    const price = parseInt(sitterForm.price_hour, 10);
     const payload = {
       ...sitterForm,
       price_hour: price,
@@ -53,7 +77,7 @@ function CompleteSitter() {
         { headers: { 'Content-Type': 'application/json' } }
       );
 
-      setMessage('OK:' + response.data.message);
+      setMessage('OK: ' + response.data.message);
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (error) {
       console.error(error);
@@ -88,7 +112,8 @@ function CompleteSitter() {
             value="true"
             checked={sitterForm.gender === true}
             onChange={handleGenderChange}
-          /> Female
+          />{' '}
+          Female
         </label>
         <label>
           <input
@@ -97,7 +122,8 @@ function CompleteSitter() {
             value="false"
             checked={sitterForm.gender === false}
             onChange={handleGenderChange}
-          /> Male
+          />{' '}
+          Male
         </label>
       </div>
 
@@ -139,7 +165,8 @@ function CompleteSitter() {
           type="checkbox"
           checked={sitterForm.smoker}
           onChange={handleChange}
-        /> Smoker
+        />{' '}
+        Smoker
       </label>
 
       <label>
@@ -148,7 +175,8 @@ function CompleteSitter() {
           type="checkbox"
           checked={sitterForm.drives}
           onChange={handleChange}
-        /> Drives
+        />{' '}
+        Drives
       </label>
 
       <label>
@@ -157,10 +185,13 @@ function CompleteSitter() {
           type="checkbox"
           checked={sitterForm.pets}
           onChange={handleChange}
-        /> Has pets
+        />{' '}
+        Has pets
       </label>
 
-      <button onClick={handleSubmit}>Submit All Info</button>
+      <button onClick={handleSubmit} disabled={!isFormComplete()}>
+        Submit All Info
+      </button>
     </div>
   );
 }
