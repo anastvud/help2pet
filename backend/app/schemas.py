@@ -18,11 +18,11 @@ class PetsitterAdditionalInfo(BaseModel):
     profession: constr(max_length=40)
     date_of_birth: date
     price_hour: int
-    experience: constr(max_length=40)
+    experience: constr(max_length=255)
     smoker: bool
     drives: bool
     pets: bool
-    languages: constr(max_length=40)
+    languages: constr(max_length=255)
 
 #TODO: update user
 
@@ -30,10 +30,10 @@ class NearbySearchRequest(BaseModel):
     zipcode: str
 
 class OwnerAdditionalInfo(BaseModel):
-    zipcode: constr(max_length=5)
-    area: constr(max_length=40)
-    gender: bool
-    pets: constr(max_length=255)
+    zipcode: Optional[str]
+    area: Optional[str]
+    gender: Optional[bool]
+    pets: Optional[str]
 
 class UserLogin(BaseModel):
     username: str

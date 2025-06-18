@@ -51,9 +51,9 @@ async def register_petsitter_basic(petsitter: UserBasicCreate, db: AsyncSession 
 
 @user_router.put("/register/petsitter/{petsitter_id}/complete")
 async def complete_petsitter_registration(
-        petsitter_id: int,
-        additional_info: PetsitterAdditionalInfo,
-        db: AsyncSession = Depends(get_db)
+    petsitter_id: int,
+    additional_info: PetsitterAdditionalInfo,
+    db: AsyncSession = Depends(get_db)
 ):
     # Check if petsitter exists
     result = await db.execute(
@@ -109,8 +109,14 @@ async def register_owner_basic(owner: UserBasicCreate, db: AsyncSession = Depend
 
 
 @user_router.put("/register/owner/{owner_id}/complete")
-async def complete_owner_registration(owner_id: int, additional_info: OwnerAdditionalInfo, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Owner).where(Owner.id == owner_id))
+async def complete_owner_registration(
+    owner_id: int,
+    additional_info: OwnerAdditionalInfo,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+        select(Owner).where(Owner.id == owner_id)
+    )
     owner = result.scalar_one_or_none()
 
     if not owner:
@@ -127,7 +133,7 @@ async def complete_owner_registration(owner_id: int, additional_info: OwnerAddit
         await db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-    return {"message": "Owner registration completed successfully"}
+    return {"message": "Owner info updated successfully"}
 
 
 

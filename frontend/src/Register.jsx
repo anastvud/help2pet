@@ -21,64 +21,63 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const payload = {
-    username: form.username,
-    password: form.password,
-    name: form.name,
-    surname: form.surname,
-    email: form.email,
-    phone_number: form.phone_number
-  };
+    const payload = {
+      username: form.username,
+      password: form.password,
+      name: form.name,
+      surname: form.surname,
+      email: form.email,
+      phone_number: form.phone_number
+    };
 
-  const url =
-    form.role === "sitter"
-      ? "http://127.0.0.1:8001/register/petsitter"
-      : "http://127.0.0.1:8001/register/owner";
+    const url =
+      form.role === "sitter"
+        ? "http://127.0.0.1:8000/register/petsitter"
+        : "http://127.0.0.1:8000/register/owner";
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      setMessage("✅ " + data.message);
-
-      const id = form.role === "sitter" ? data.petsitter_id : data.owner_id;
-      localStorage.setItem("userId", id);
-
-      // Navigate
-      if (form.role === "sitter") {
-        navigate(`/sitter/${id}`);
-      } else {
-        navigate("/my-pets");
-      }
-
-      setForm({
-        username: '',
-        password: '',
-        name: '',
-        surname: '',
-        email: '',
-        phone_number: '',
-        role: ''
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-    } else {
-      setMessage("Error: " + (data.detail || "Registration failed"));
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage("OK " + data.message);
+
+        const id = form.role === "sitter" ? data.petsitter_id : data.owner_id;
+        localStorage.setItem("userId", id);
+
+        // ✅ Navigate to complete profile page
+        if (form.role === "sitter") {
+          navigate("/complete-sitter");
+        } else {
+          navigate("/complete-owner");
+        }
+
+        setForm({
+          username: '',
+          password: '',
+          name: '',
+          surname: '',
+          email: '',
+          phone_number: '',
+          role: ''
+        });
+
+      } else {
+        setMessage("Error: " + (data.detail || "Registration failed"));
+      }
+
+    } catch (error) {
+      console.error("Network error during registration:", error);
+      setMessage("Network error");
     }
-
-  } catch (error) {
-    console.error("Network error during registration:", error);
-    setMessage("Network error");
-  }
-};
-
+  };
 
   return (
     <div className="form-container">

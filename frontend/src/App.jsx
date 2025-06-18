@@ -3,10 +3,12 @@ import Login from './Login';       // ✅ Importing from external file
 import Register from './Register'; // ✅ Importing from external file
 import Dashboard from './Dashboard';
 import SitterProfile from './SitterProfile';
-import MyPets from './MyPets';
+import MyPets from './CompleteOwner.jsx';
 import SitterDetails from './SitterDetails';
 import Home from "./Home";
 import './App.css';
+import CompleteOwner from "./CompleteOwner.jsx";
+import CompleteSitter from "./CompleteSitter.jsx";
 
 function Welcome() {
   return (
@@ -29,6 +31,10 @@ function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/complete-owner" element={<CompleteOwner />} />
+        <Route path="/complete-sitter" element={<CompleteSitter />} />
+
+
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sitter/:id" element={<SitterProfile />} />
         <Route path="/my-pets" element={<MyPets />} />
