@@ -1,21 +1,26 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ Import navigate
+import { useNavigate } from 'react-router-dom';
 import './form.css';
 
 function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
-  const navigate = useNavigate(); // ✅ Initialize navigate
+  const [role, setRole] = useState('owner'); // 'owner' or 'petsitter'
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleRoleChange = (e) => {
+    setRole(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8001/user/login', {
+      const response = await fetch(`http://localhost:8000/login/${role}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,14 +31,21 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(` ${data.message}`);
-        navigate('/home'); // ✅ Redirect after success
+        setMessage(`${data.message}`);
+
+        // Optional: store user ID or token in localStorage
+        if (data.user_id) {
+          localStorage.setItem('userId', data.user_id);
+          localStorage.setItem('role', role);
+        }
+
+        navigate('/home');
       } else {
-        setMessage(` ${data.detail || 'Login failed'}`);
+        setMessage(data.detail || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setMessage(' Network error');
+      setMessage('Network error');
     }
   };
 
@@ -41,6 +53,30 @@ function Login() {
     <div className="form-container">
       <h2>Login</h2>
       {message && <p className="message">{message}</p>}
+
+      <div className="role-select">
+        <label>
+          <input
+            type="radio"
+            name="role"
+            value="owner"
+            checked={role === 'owner'}
+            onChange={handleRoleChange}
+          />
+          Owner
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="role"
+            value="petsitter"
+            checked={role === 'petsitter'}
+            onChange={handleRoleChange}
+          />
+          Petsitter
+        </label>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <input
           type="text"

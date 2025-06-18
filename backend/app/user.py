@@ -158,15 +158,6 @@ async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
 
     return {"message": f"Welcome petsitter, {user_db.name}!"}
 
-@user_router.post("/login/owner")
-async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Petsitter).where(Petsitter.username == user.username))
-    user_db = result.scalar_one_or_none()
-
-    if not user_db or not verify_password(user.password, user_db.password):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-
-    return {"message": f"Welcome petsitter, {user_db.name}!"}
 
 @user_router.get("/petsitters/nearby")
 async def get_nearby_petsitters(data: NearbySearchRequest, db: AsyncSession = Depends(get_db)):
