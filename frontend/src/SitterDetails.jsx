@@ -72,6 +72,7 @@ function SitterDetails() {
           </ul>
         </>
       )}
+
     </div>
   );
 }
