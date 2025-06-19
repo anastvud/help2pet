@@ -33,12 +33,11 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/complete-owner" element={<CompleteOwner />} />
         <Route path="/complete-sitter" element={<CompleteSitter />} />
-
-
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/sitter-details/:id" element={<SitterDetails />} />
+
         <Route path="/sitter/:id" element={<SitterProfile />} />
         <Route path="/my-pets" element={<MyPets />} />
-        <Route path="/sitter-details/:id" element={<SitterDetails />} />
         <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
