@@ -1,98 +1,78 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import "./SitterDetails.css";
-import useSitter from "./useSitter";
 
 function SitterDetails() {
   const { id } = useParams();
+  const [sitter, setSitter] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-   const { sitter, loading, error } = useSitter(id);
-
- if (loading) return <p>Loading sitter…</p>;
- if (error)   return <p style={{color:"red"}}>{error}</p>;
-
-  const [selectedDates, setSelectedDates] = useState([]);
-  const [petDetails, setPetDetails] = useState({ name: "", type: "", notes: "" });
-
-  if (!sitter) return <p>Sitter not found.</p>;
-
-  const tileDisabled = ({ date }) =>
-    !sitter.availability.includes(date.toISOString().split("T")[0]);
-
-  const handleDateChange = (range) => {
-    const [start, end] = Array.isArray(range) ? range : [range, range];
-    let dates = [];
-    let current = new Date(start);
-    while (current <= end) {
-      const iso = current.toISOString().split("T")[0];
-      if (sitter.availability.includes(iso)) dates.push(iso);
-      current.setDate(current.getDate() + 1);
+  useEffect(() => {
+    async function fetchSitter() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/petsitters/${id}`);
+        if (!res.ok) throw new Error(`Error fetching sitter: ${res.statusText}`);
+        const data = await res.json();
+        setSitter(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    setSelectedDates(dates);
-  };
+    fetchSitter();
+  }, [id]);
 
-  const handleBookingSubmit = () => {
-    console.log("Booking Details:", {
-      sitterId: sitter.id,
-      dates: selectedDates,
-      petDetails,
-    });
-    alert("Booking confirmed! A confirmation email has been sent.");
-    // Simulate backend submission here
-  };
+  if (loading) return <p>Loading sitter…</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!sitter) return <p>Sitter not found.</p>;
 
   return (
     <div className="sitter-details-container">
-      <h2>{sitter.name}</h2>
-      <img src={sitter.image} alt={sitter.name} />
-      <p><strong>Rating:</strong> ⭐ {sitter.rating}</p>
+      <h2>{sitter.first_name} {sitter.last_name}</h2>
+
+      {sitter.image && (
+        <img
+          src={sitter.image}
+          alt={`${sitter.first_name} ${sitter.last_name}`}
+        />
+      )}
+
       <p><strong>Email:</strong> {sitter.email}</p>
       <p><strong>Phone:</strong> {sitter.phone}</p>
+      <p><strong>Zipcode:</strong> {sitter.zipcode}</p>
+      <p><strong>Area:</strong> {sitter.area}</p>
+      <p><strong>Price/hour:</strong> ${sitter.price_hour}</p>
+      <p><strong>Rating:</strong> ⭐ {sitter.rating ?? "New"}</p>
       <p><strong>Experience:</strong> {sitter.experience}</p>
       <p><strong>Services:</strong> {sitter.services}</p>
       <p><strong>Bio:</strong> {sitter.bio}</p>
-      <p><strong>Pricing:</strong> {sitter.pricing}</p>
 
-      <h3>Availability</h3>
-      <Calendar
-        selectRange
-        onChange={handleDateChange}
-        tileDisabled={tileDisabled}
-      />
-      {selectedDates.length > 0 && (
-        <p>Selected dates: {selectedDates.join(", ")}</p>
+      {sitter.availability && sitter.availability.length > 0 && (
+        <>
+          <h3>Availability Dates</h3>
+          <ul>
+            {sitter.availability.map((date) => (
+              <li key={date}>{date}</li>
+            ))}
+          </ul>
+        </>
       )}
 
-      <h3>Book Now</h3>
-      <form onSubmit={(e) => { e.preventDefault(); handleBookingSubmit(); }}>
-        <input
-          type="text"
-          placeholder="Pet Name"
-          value={petDetails.name}
-          onChange={(e) => setPetDetails({ ...petDetails, name: e.target.value })}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Pet Type (e.g. Dog)"
-          value={petDetails.type}
-          onChange={(e) => setPetDetails({ ...petDetails, type: e.target.value })}
-          required
-        />
-        <textarea
-          placeholder="Additional Notes"
-          value={petDetails.notes}
-          onChange={(e) => setPetDetails({ ...petDetails, notes: e.target.value })}
-        />
-        <button type="submit">Confirm Booking</button>
-      </form>
+      {sitter.reviews && sitter.reviews.length > 0 && (
+        <>
+          <h3>Reviews</h3>
+          <ul>
+            {sitter.reviews.map((review, idx) => (
+              <li key={idx}>{review}</li>
+            ))}
+          </ul>
+        </>
+      )}
 
-      <h3>Reviews</h3>
-      <ul>
-        {sitter.reviews.map((review, idx) => <li key={idx}>{review}</li>)}
-      </ul>
     </div>
   );
 }

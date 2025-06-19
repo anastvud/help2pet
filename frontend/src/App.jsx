@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Login from './Login';       // ✅ Importing from external file
-import Register from './Register'; // ✅ Importing from external file
+import Login from './Login';      
+import Register from './Register'; 
 import Dashboard from './Dashboard';
 import SitterProfile from './SitterProfile';
 import MyPets from './CompleteOwner.jsx';
@@ -33,12 +33,12 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/complete-owner" element={<CompleteOwner />} />
         <Route path="/complete-sitter" element={<CompleteSitter />} />
-
-
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/sitter-details/:id" element={<SitterDetails />} />
+
         <Route path="/sitter/:id" element={<SitterProfile />} />
         <Route path="/my-pets" element={<MyPets />} />
-        <Route path="/sitter-details/:id" element={<SitterDetails />} />
+
         <Route path="/home" element={<Home />} />
       </Routes>
     </Router>

@@ -160,9 +160,13 @@ async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
 
 
 @user_router.get("/petsitters/nearby")
-async def get_nearby_petsitters(data: NearbySearchRequest, db: AsyncSession = Depends(get_db)):
-    prefix = data.zipcode[:2]  # You can adjust the slicing logic based on your postcode structure
-    like_pattern = f"{prefix}%"  # e.g., "30%" to find nearby postcodes like "30-001", "30-050", etc.
+async def get_nearby_petsitters(user_id: int, db: AsyncSession = Depends(get_db)):
+    user = await db.get(Petsitter, user_id)  # ✅ FIX: Use actual ORM model
+    if not user or not user.zipcode:
+        raise HTTPException(status_code=404, detail="User or zipcode not found")
+
+    prefix = user.zipcode[:3]
+    like_pattern = f"{prefix}%"
 
     result = await db.execute(
         select(Petsitter).where(Petsitter.zipcode.like(like_pattern))
@@ -170,6 +174,7 @@ async def get_nearby_petsitters(data: NearbySearchRequest, db: AsyncSession = De
     sitters = result.scalars().all()
 
     return sitters
+
 
 @user_router.get("/petsitters/{petsitter_id}", response_model=PetsitterPublic)
 async def get_petsitter_profile(petsitter_id: int, db: AsyncSession = Depends(get_db)):
