@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./SitterDetails.css";
 
 function SitterDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [sitter, setSitter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,49 +32,38 @@ function SitterDetails() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!sitter) return <p>Sitter not found.</p>;
 
+  const handleBookNow = () => {
+    navigate(`/book/${id}`);
+  };
+
   return (
     <div className="sitter-details-container">
-      <h2>{sitter.first_name} {sitter.last_name}</h2>
+      <h2>{sitter.name} {sitter.surname}</h2>
 
       {sitter.image && (
         <img
           src={sitter.image}
-          alt={`${sitter.first_name} ${sitter.last_name}`}
+          alt={`${sitter.name} ${sitter.surname}`}
         />
       )}
 
-      <p><strong>Email:</strong> {sitter.email}</p>
-      <p><strong>Phone:</strong> {sitter.phone}</p>
       <p><strong>Zipcode:</strong> {sitter.zipcode}</p>
       <p><strong>Area:</strong> {sitter.area}</p>
-      <p><strong>Price/hour:</strong> ${sitter.price_hour}</p>
-      <p><strong>Rating:</strong> ⭐ {sitter.rating ?? "New"}</p>
+      <p><strong>Gender:</strong> {sitter.gender}</p>
+      <p><strong>Profession:</strong> {sitter.profession}</p>
+      <p><strong>Date of Birth:</strong> {sitter.date_of_birth}</p>
+      <p><strong>Price per hour:</strong> ${sitter.price_hour}</p>
       <p><strong>Experience:</strong> {sitter.experience}</p>
-      <p><strong>Services:</strong> {sitter.services}</p>
-      <p><strong>Bio:</strong> {sitter.bio}</p>
+      <p><strong>Smoker:</strong> {sitter.smoker ? "Yes" : "No"}</p>
+      <p><strong>Drives:</strong> {sitter.drives ? "Yes" : "No"}</p>
+      <p><strong>Pets:</strong> {sitter.pets}</p>
+      <p><strong>Languages:</strong> {sitter.languages}</p>
+      <p><strong>Email:</strong> {sitter.email}</p>
+      <p><strong>Phone Number:</strong> {sitter.phone_number}</p>
 
-      {sitter.availability && sitter.availability.length > 0 && (
-        <>
-          <h3>Availability Dates</h3>
-          <ul>
-            {sitter.availability.map((date) => (
-              <li key={date}>{date}</li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {sitter.reviews && sitter.reviews.length > 0 && (
-        <>
-          <h3>Reviews</h3>
-          <ul>
-            {sitter.reviews.map((review, idx) => (
-              <li key={idx}>{review}</li>
-            ))}
-          </ul>
-        </>
-      )}
-
+      <button onClick={handleBookNow} className="book-now-button">
+        Book Now
+      </button>
     </div>
   );
 }
