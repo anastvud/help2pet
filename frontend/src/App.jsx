@@ -9,6 +9,7 @@ import Home from "./Home";
 import './App.css';
 import CompleteOwner from "./CompleteOwner.jsx";
 import CompleteSitter from "./CompleteSitter.jsx";
+import Booking from "./Booking.jsx";
 
 function Welcome() {
   return (
@@ -35,6 +36,8 @@ function App() {
         <Route path="/complete-sitter" element={<CompleteSitter />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sitter-details/:id" element={<SitterDetails />} />
+        <Route path="/book/:id" element={<Booking />} />
+
 
         <Route path="/sitter/:id" element={<SitterProfile />} />
         <Route path="/my-pets" element={<MyPets />} />

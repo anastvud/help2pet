@@ -28,7 +28,12 @@ async def create_timeslot(timeslot: TimeSlotCreate, db: AsyncSession = Depends(g
 
 @timeslot_router.get("/timeslots/{sitter_id}")
 async def get_timeslots_for_sitter(sitter_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(TimeSlot).where(TimeSlot.sitter_id == sitter_id))
+    result = await db.execute(
+        select(TimeSlot).where(
+            TimeSlot.sitter_id == sitter_id,
+            TimeSlot.is_booked == False
+        )
+    )
     timeslots = result.scalars().all()
     return timeslots
 
