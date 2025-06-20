@@ -30,8 +30,7 @@ async def create_timeslot(timeslot: TimeSlotCreate, db: AsyncSession = Depends(g
 async def get_timeslots_for_sitter(sitter_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(TimeSlot).where(
-            TimeSlot.sitter_id == sitter_id,
-            TimeSlot.is_booked == False
+            TimeSlot.sitter_id == sitter_id
         )
     )
     timeslots = result.scalars().all()

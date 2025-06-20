@@ -35,10 +35,9 @@ function Booking() {
         if (!res.ok) throw new Error("Failed to fetch timeslots");
         const data = await res.json();
 
-        const unbooked = data.filter(slot => slot.is_booked === false);
-
+        // Group all timeslots, including booked ones
         const grouped = {};
-        unbooked.forEach(slot => {
+        data.forEach(slot => {
           const dateKey = slot.start_time?.split("T")[0];
           if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push(slot);
@@ -60,14 +59,12 @@ function Booking() {
       const bookingData = {
         timeslot_id: slot.id,
         owner_id: ownerId,
-        status: "confirmed", // or your default status if different
+        status: "confirmed",
       };
 
       const res = await fetch(`http://127.0.0.1:8000/bookings`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingData)
       });
 
@@ -78,7 +75,7 @@ function Booking() {
 
       alert("Booking confirmed! Confirmation emails have been sent.");
 
-      // Remove booked timeslot from list without full reload
+      // Update timeslots state by removing the booked slot
       setTimeslots(prev => {
         const updated = { ...prev };
         updated[slot.start_time.split("T")[0]] = updated[slot.start_time.split("T")[0]].filter(s => s.id !== slot.id);
@@ -105,43 +102,53 @@ function Booking() {
           <div key={date} className="timeslot-card">
             <h3>{formatDate(date)}</h3>
             <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-              {slots.map((slot) => (
-                <li
-                  key={slot.id}
-                  onMouseEnter={() => setHoveredSlotId(slot.id)}
-                  onMouseLeave={() => setHoveredSlotId(null)}
-                  style={{
-                    backgroundColor: hoveredSlotId === slot.id ? "#e6f0ff" : "#f9f9f9",
-                    padding: "0.5rem",
-                    borderRadius: "6px",
-                    marginBottom: "0.5rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    transition: "background-color 0.3s"
-                  }}
-                >
-                  <span>
-                    {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
-                  </span>
+              {slots.map((slot) => {
+                const isBooked = slot.is_booked;
+                return (
+                  <li
+                    key={slot.id}
+                    onMouseEnter={() => setHoveredSlotId(slot.id)}
+                    onMouseLeave={() => setHoveredSlotId(null)}
+                    style={{
+                      backgroundColor: isBooked
+                        ? "#d3d3d3" // gray for booked
+                        : hoveredSlotId === slot.id
+                        ? "#e6f0ff" // light blue on hover unbooked
+                        : "#f9f9f9", // normal for unbooked
+                      color: isBooked ? "#777" : "#000",
+                      padding: "0.5rem",
+                      borderRadius: "6px",
+                      marginBottom: "0.5rem",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      transition: "background-color 0.3s, color 0.3s",
+                      cursor: isBooked ? "not-allowed" : "pointer",
+                      userSelect: "none",
+                    }}
+                  >
+                    <span>
+                      {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                    </span>
 
-                  {hoveredSlotId === slot.id && (
-                    <button
-                      onClick={() => bookNow(slot)}
-                      style={{
-                        padding: "0.3rem 0.6rem",
-                        backgroundColor: "#007bff",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer"
-                      }}
-                    >
-                      Book Now
-                    </button>
-                  )}
-                </li>
-              ))}
+                    {!isBooked && hoveredSlotId === slot.id && (
+                      <button
+                        onClick={() => bookNow(slot)}
+                        style={{
+                          padding: "0.3rem 0.6rem",
+                          backgroundColor: "#007bff",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        Book Now
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
