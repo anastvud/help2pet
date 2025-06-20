@@ -53,11 +53,13 @@ class BookingUpdate(BaseModel):
     status: Optional[str] = None
     owner_id: Optional[int] = None
     timeslot_id: Optional[int] = None
+    notes: Optional[str] = None
 
 class BookingCreate(BaseModel):
     timeslot_id: int
     owner_id: int
     status: str = "confirmed"
+    notes: Optional[str] = None
 
 class PetsitterPublic(BaseModel):
     name: str

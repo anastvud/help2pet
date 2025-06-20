@@ -73,6 +73,7 @@ class Booking(Base):
     owner_id = Column(Integer, ForeignKey("owners.id"), nullable=False)
     status = Column(String(20), default="pending", nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    notes = Column(String(255), nullable=False)
 
     timeslot = relationship("TimeSlot", back_populates="booking")
     owner = relationship("Owner", back_populates="bookings")
