@@ -48,6 +48,11 @@ async def create_booking(booking: BookingCreate, db: AsyncSession = Depends(get_
         if not all([owner, sitter, timeslot]):
             raise HTTPException(status_code=500, detail="Related data not found for email notification")
 
+        # Mark timeslot as booked
+        timeslot.is_booked = True
+        db.add(timeslot)
+        await db.commit()
+
         # Format the email message
         subject = "Booking Confirmation"
         body = f"""
@@ -72,7 +77,7 @@ async def create_booking(booking: BookingCreate, db: AsyncSession = Depends(get_
         fm = FastMail(mail_conf)
         await fm.send_message(message)
 
-        return {"message": "Booking created and email sent", "id": new_booking.id}
+        return {"message": "Booking created, timeslot updated, and email sent", "id": new_booking.id}
 
     except IntegrityError:
         await db.rollback()
@@ -80,7 +85,6 @@ async def create_booking(booking: BookingCreate, db: AsyncSession = Depends(get_
             status_code=400,
             detail="This timeslot is already booked or invalid owner/timeslot ID"
         )
-
 
 @booking_router.put("/bookings/modify/{booking_id}")
 async def update_booking(

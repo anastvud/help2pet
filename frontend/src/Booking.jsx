@@ -15,16 +15,18 @@ const formatTime = (datetimeStr) => {
   return new Date(datetimeStr).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,   // 24-hour format
+    hour12: false,
   });
 };
 
 function Booking() {
-  const { id } = useParams();
+  const { id } = useParams(); // sitter_id
   const [timeslots, setTimeslots] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredSlotId, setHoveredSlotId] = useState(null);
+
+  const ownerId = localStorage.getItem('userId');
 
   useEffect(() => {
     async function fetchTimeslots() {
@@ -55,25 +57,34 @@ function Booking() {
 
   const bookNow = async (slot) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/timeslots/modify/${slot.id}`, {
-        method: "PUT",
+      const bookingData = {
+        timeslot_id: slot.id,
+        owner_id: ownerId,
+        status: "confirmed", // or your default status if different
+      };
+
+      const res = await fetch(`http://127.0.0.1:8000/bookings`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ is_booked: true })
+        body: JSON.stringify(bookingData)
       });
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.detail || "Failed to book timeslot");
+        throw new Error(errData.detail || "Failed to create booking");
       }
 
-      window.location.reload();
+      alert("Booking confirmed! Confirmation emails have been sent.");
 
-      // Optionally refresh timeslots without reload
+      // Remove booked timeslot from list without full reload
       setTimeslots(prev => {
         const updated = { ...prev };
         updated[slot.start_time.split("T")[0]] = updated[slot.start_time.split("T")[0]].filter(s => s.id !== slot.id);
+        if (updated[slot.start_time.split("T")[0]].length === 0) {
+          delete updated[slot.start_time.split("T")[0]];
+        }
         return updated;
       });
 
