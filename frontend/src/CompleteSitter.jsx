@@ -6,7 +6,7 @@ function CompleteSitter() {
   const [sitterForm, setSitterForm] = useState({
     zipcode: '',
     area: '',
-    gender: '', // boolean true/false
+    gender: '',
     profession: '',
     date_of_birth: '',
     price_hour: '',
@@ -78,7 +78,7 @@ function CompleteSitter() {
       );
 
       setMessage('OK: ' + response.data.message);
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/my-bookings'), 1500);
     } catch (error) {
       console.error(error);
       setMessage('Failed to update profile.');

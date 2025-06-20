@@ -2,6 +2,8 @@ from sqlalchemy import Boolean, Column, Date, Integer, String, ForeignKey, DateT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from app.utils import BookingStatus
+from sqlalchemy import TIMESTAMP
+
 
 Base = declarative_base()
 
@@ -55,8 +57,8 @@ class TimeSlot(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     sitter_id = Column(Integer, ForeignKey("petsitters.id"), nullable=False)
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=False)
+    start_time = Column(TIMESTAMP(timezone=True))
+    end_time = Column(TIMESTAMP(timezone=True))
     is_booked = Column(Boolean, default=False)
 
     booking = relationship("Booking", back_populates="timeslot", uselist=False)

@@ -144,3 +144,32 @@ async def get_booking_by_id(booking_id: int, db: AsyncSession = Depends(get_db))
         "status": booking.status,
         "created_at": booking.created_at,
     }
+
+@booking_router.get("/bookings/sitter/{sitter_id}")
+async def get_bookings_for_sitter(sitter_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Booking, Owner, TimeSlot)
+        .join(TimeSlot, Booking.timeslot_id == TimeSlot.id)
+        .join(Owner, Booking.owner_id == Owner.id)
+        .where(TimeSlot.sitter_id == sitter_id)
+    )
+    rows = result.all()
+
+    bookings = []
+    for booking, owner, timeslot in rows:
+        bookings.append({
+            "booking_id": booking.id,
+            "status": booking.status,
+            "created_at": booking.created_at,
+            "start_time": timeslot.start_time,
+            "end_time": timeslot.end_time,
+            "owner": {
+                "id": owner.id,
+                "name": owner.name,
+                "surname": owner.surname,
+                "email": owner.email,
+            }
+        })
+
+    return bookings
+
