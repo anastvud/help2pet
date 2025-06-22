@@ -17,5 +17,5 @@ npm install
 ```
 Run frontend:
 ```
-bash npm run dev
+npm run dev
 ```
