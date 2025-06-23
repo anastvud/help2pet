@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './form.css'; // ✅ reuse same styles as CompleteOwner
 
 function CompleteSitter() {
   const [sitterForm, setSitterForm] = useState({
@@ -86,112 +87,114 @@ function CompleteSitter() {
   };
 
   return (
-    <div className="complete-sitter-form">
-      <h2>Complete Your Profile</h2>
-      {message && <p className="message">{message}</p>}
+    <div className="form-page">
+      <div className="form-container">
+        <h2>Complete Your Profile</h2>
+        {message && <p className="message">{message}</p>}
 
-      <input
-        name="zipcode"
-        placeholder="Zipcode"
-        value={sitterForm.zipcode}
-        onChange={handleChange}
-      />
-      <input
-        name="area"
-        placeholder="Area"
-        value={sitterForm.area}
-        onChange={handleChange}
-      />
+        <input
+          name="zipcode"
+          placeholder="Zipcode"
+          value={sitterForm.zipcode}
+          onChange={handleChange}
+        />
+        <input
+          name="area"
+          placeholder="Area"
+          value={sitterForm.area}
+          onChange={handleChange}
+        />
 
-      <div>
-        <label>Gender: </label>
-        <label>
-          <input
-            type="radio"
-            name="gender"
-            value="true"
-            checked={sitterForm.gender === true}
-            onChange={handleGenderChange}
-          />{' '}
-          Female
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="gender"
-            value="false"
-            checked={sitterForm.gender === false}
-            onChange={handleGenderChange}
-          />{' '}
-          Male
-        </label>
+        <div>
+          <label>Gender: </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="true"
+              checked={sitterForm.gender === true}
+              onChange={handleGenderChange}
+            /> Female
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="false"
+              checked={sitterForm.gender === false}
+              onChange={handleGenderChange}
+            /> Male
+          </label>
+        </div>
+
+        <input
+          name="profession"
+          placeholder="Profession"
+          value={sitterForm.profession}
+          onChange={handleChange}
+        />
+        <input
+          name="date_of_birth"
+          type="date"
+          value={sitterForm.date_of_birth}
+          onChange={handleChange}
+        />
+        <input
+          name="price_hour"
+          placeholder="Price per hour"
+          value={sitterForm.price_hour}
+          onChange={handleChange}
+        />
+        <input
+          name="experience"
+          placeholder="Experience"
+          value={sitterForm.experience}
+          onChange={handleChange}
+        />
+        <input
+          name="languages"
+          placeholder="Languages"
+          value={sitterForm.languages}
+          onChange={handleChange}
+        />
+
+        <div>
+          <label>
+            <input
+              name="smoker"
+              type="checkbox"
+              checked={sitterForm.smoker}
+              onChange={handleChange}
+            /> Smoker
+          </label>
+        </div>
+
+        <div>
+          <label>
+            <input
+              name="drives"
+              type="checkbox"
+              checked={sitterForm.drives}
+              onChange={handleChange}
+            /> Drives
+          </label>
+        </div>
+
+        <div>
+          <label>
+            <input
+              name="pets"
+              type="checkbox"
+              checked={sitterForm.pets}
+              onChange={handleChange}
+            /> Has pets
+          </label>
+        </div>
+
+        <button onClick={handleSubmit} disabled={!isFormComplete()}>
+          Submit All Info
+        </button>
       </div>
-
-      <input
-        name="profession"
-        placeholder="Profession"
-        value={sitterForm.profession}
-        onChange={handleChange}
-      />
-      <input
-        name="date_of_birth"
-        type="date"
-        placeholder="Date of Birth"
-        value={sitterForm.date_of_birth}
-        onChange={handleChange}
-      />
-      <input
-        name="price_hour"
-        placeholder="Price per hour"
-        value={sitterForm.price_hour}
-        onChange={handleChange}
-      />
-      <input
-        name="experience"
-        placeholder="Experience"
-        value={sitterForm.experience}
-        onChange={handleChange}
-      />
-      <input
-        name="languages"
-        placeholder="Languages"
-        value={sitterForm.languages}
-        onChange={handleChange}
-      />
-
-      <label>
-        <input
-          name="smoker"
-          type="checkbox"
-          checked={sitterForm.smoker}
-          onChange={handleChange}
-        />{' '}
-        Smoker
-      </label>
-
-      <label>
-        <input
-          name="drives"
-          type="checkbox"
-          checked={sitterForm.drives}
-          onChange={handleChange}
-        />{' '}
-        Drives
-      </label>
-
-      <label>
-        <input
-          name="pets"
-          type="checkbox"
-          checked={sitterForm.pets}
-          onChange={handleChange}
-        />{' '}
-        Has pets
-      </label>
-
-      <button onClick={handleSubmit} disabled={!isFormComplete()}>
-        Submit All Info
-      </button>
     </div>
   );
 }
