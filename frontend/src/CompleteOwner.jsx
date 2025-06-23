@@ -123,53 +123,7 @@ function CompleteOwner() {
           </label>
         </div>
 
-        <h3>Pet Info</h3>
-        <input
-          name="name"
-          placeholder="Pet Name"
-          value={petForm.name}
-          onChange={handlePetChange}
-        />
-        <input
-          name="breed"
-          placeholder="Breed"
-          value={petForm.breed}
-          onChange={handlePetChange}
-        />
-        <input
-          name="age"
-          placeholder="Age"
-          value={petForm.age}
-          onChange={handlePetChange}
-        />
-        <input
-          name="medical"
-          placeholder="Medical Conditions"
-          value={petForm.medical}
-          onChange={handlePetChange}
-        />
-        <input
-          name="diet"
-          placeholder="Dietary Needs"
-          value={petForm.diet}
-          onChange={handlePetChange}
-        />
-        <textarea
-          name="notes"
-          placeholder="Special Instructions"
-          value={petForm.notes}
-          onChange={handlePetChange}
-        />
 
-        <button onClick={addPet}>Add Pet</button>
-
-        <ul>
-          {pets.map((pet, idx) => (
-            <li key={idx}>
-              {pet.name} ({pet.breed}) - Age: {pet.age}
-            </li>
-          ))}
-        </ul>
 
         <button onClick={handleSubmit}>Submit All Info</button>
       </div>
