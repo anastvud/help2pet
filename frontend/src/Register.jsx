@@ -80,6 +80,7 @@ function Register() {
   };
 
   return (
+  <div className="form-page">
     <div className="form-container">
       <h2>Register</h2>
       {message && <p className="message">{message}</p>}
@@ -141,7 +142,9 @@ function Register() {
         <button type="submit">Register</button>
       </form>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default Register;

@@ -5,7 +5,7 @@ import './form.css';
 function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
-  const [role, setRole] = useState('owner'); // 'owner' or 'petsitter'
+  const [role, setRole] = useState('owner');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -32,13 +32,10 @@ function Login() {
 
       if (response.ok) {
         setMessage(`${data.message}`);
-
-        // Optional: store user ID or token in localStorage
         if (data.user_id) {
           localStorage.setItem('userId', data.user_id);
           localStorage.setItem('role', role);
         }
-
         navigate('/home');
       } else {
         setMessage(data.detail || 'Login failed');
@@ -50,52 +47,54 @@ function Login() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Login</h2>
-      {message && <p className="message">{message}</p>}
+    <div className="form-page">
+      <div className="form-container">
+        <h2>Login</h2>
+        {message && <p className="message">{message}</p>}
 
-      <div className="role-select">
-        <label>
+        <div className="role-select">
+          <label>
+            <input
+              type="radio"
+              name="role"
+              value="owner"
+              checked={role === 'owner'}
+              onChange={handleRoleChange}
+            />
+            Owner
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="role"
+              value="petsitter"
+              checked={role === 'petsitter'}
+              onChange={handleRoleChange}
+            />
+            Petsitter
+          </label>
+        </div>
+
+        <form onSubmit={handleSubmit}>
           <input
-            type="radio"
-            name="role"
-            value="owner"
-            checked={role === 'owner'}
-            onChange={handleRoleChange}
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={form.username}
+            onChange={handleChange}
+            required
           />
-          Owner
-        </label>
-        <label>
           <input
-            type="radio"
-            name="role"
-            value="petsitter"
-            checked={role === 'petsitter'}
-            onChange={handleRoleChange}
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            required
           />
-          Petsitter
-        </label>
+          <button type="submit">Login</button>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
     </div>
   );
 }

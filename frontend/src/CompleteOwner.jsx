@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './form.css'; // ✅ reuse the same styles as your other forms
 
 function CompleteOwner() {
   const [ownerForm, setOwnerForm] = useState({
@@ -74,8 +75,6 @@ function CompleteOwner() {
       );
 
       setMessage('Profile updated: ' + response.data.message);
-
-      // Redirect after a brief delay
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (error) {
       console.error(error);
@@ -84,94 +83,96 @@ function CompleteOwner() {
   };
 
   return (
-    <div className="complete-owner-form">
-      <h2>Complete Your Profile</h2>
-      {message && <p className="message">{message}</p>}
+    <div className="form-page">
+      <div className="form-container">
+        <h2>Complete Your Profile</h2>
+        {message && <p className="message">{message}</p>}
 
-      <input
-        name="zipcode"
-        placeholder="Zipcode"
-        value={ownerForm.zipcode}
-        onChange={handleOwnerChange}
-      />
-      <input
-        name="area"
-        placeholder="Area"
-        value={ownerForm.area}
-        onChange={handleOwnerChange}
-      />
+        <input
+          name="zipcode"
+          placeholder="Zipcode"
+          value={ownerForm.zipcode}
+          onChange={handleOwnerChange}
+        />
+        <input
+          name="area"
+          placeholder="Area"
+          value={ownerForm.area}
+          onChange={handleOwnerChange}
+        />
 
-      <div>
-        <label>Gender: </label>
-        <label>
-          <input
-            type="radio"
-            name="gender"
-            value="true"
-            checked={ownerForm.gender === true}
-            onChange={handleGenderChange}
-          /> Female
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="gender"
-            value="false"
-            checked={ownerForm.gender === false}
-            onChange={handleGenderChange}
-          /> Male
-        </label>
+        <div>
+          <label>Gender: </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="true"
+              checked={ownerForm.gender === true}
+              onChange={handleGenderChange}
+            /> Female
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="false"
+              checked={ownerForm.gender === false}
+              onChange={handleGenderChange}
+            /> Male
+          </label>
+        </div>
+
+        <h3>Pet Info</h3>
+        <input
+          name="name"
+          placeholder="Pet Name"
+          value={petForm.name}
+          onChange={handlePetChange}
+        />
+        <input
+          name="breed"
+          placeholder="Breed"
+          value={petForm.breed}
+          onChange={handlePetChange}
+        />
+        <input
+          name="age"
+          placeholder="Age"
+          value={petForm.age}
+          onChange={handlePetChange}
+        />
+        <input
+          name="medical"
+          placeholder="Medical Conditions"
+          value={petForm.medical}
+          onChange={handlePetChange}
+        />
+        <input
+          name="diet"
+          placeholder="Dietary Needs"
+          value={petForm.diet}
+          onChange={handlePetChange}
+        />
+        <textarea
+          name="notes"
+          placeholder="Special Instructions"
+          value={petForm.notes}
+          onChange={handlePetChange}
+        />
+
+        <button onClick={addPet}>Add Pet</button>
+
+        <ul>
+          {pets.map((pet, idx) => (
+            <li key={idx}>
+              {pet.name} ({pet.breed}) - Age: {pet.age}
+            </li>
+          ))}
+        </ul>
+
+        <button onClick={handleSubmit}>Submit All Info</button>
       </div>
-
-      <h3>Pet Info</h3>
-      <input
-        name="name"
-        placeholder="Pet Name"
-        value={petForm.name}
-        onChange={handlePetChange}
-      />
-      <input
-        name="breed"
-        placeholder="Breed"
-        value={petForm.breed}
-        onChange={handlePetChange}
-      />
-      <input
-        name="age"
-        placeholder="Age"
-        value={petForm.age}
-        onChange={handlePetChange}
-      />
-      <input
-        name="medical"
-        placeholder="Medical Conditions"
-        value={petForm.medical}
-        onChange={handlePetChange}
-      />
-      <input
-        name="diet"
-        placeholder="Dietary Needs"
-        value={petForm.diet}
-        onChange={handlePetChange}
-      />
-      <textarea
-        name="notes"
-        placeholder="Special Instructions"
-        value={petForm.notes}
-        onChange={handlePetChange}
-      />
-
-      <button onClick={addPet}>Add Pet</button>
-
-      <ul>
-        {pets.map((pet, idx) => (
-          <li key={idx}>
-            {pet.name} ({pet.breed}) - Age: {pet.age}
-          </li>
-        ))}
-      </ul>
-
-      <button onClick={handleSubmit}>Submit All Info</button>
     </div>
   );
 }
