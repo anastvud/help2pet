@@ -145,7 +145,12 @@ async def login_owner(user: UserLogin, db: AsyncSession = Depends(get_db)):
     if not user_db or not verify_password(user.password, user_db.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
-    return {"message": f"Welcome owner, {user_db.name}!"}
+    return {
+        "message": f"Welcome owner, {user_db.name}!",
+        "user_id": user_db.id  # add this
+    }
+
+
 
 
 @user_router.post("/login/petsitter")
@@ -156,7 +161,10 @@ async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
     if not user_db or not verify_password(user.password, user_db.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
-    return {"message": f"Welcome petsitter, {user_db.name}!"}
+    return {
+        "message": f"Welcome petsitter, {user_db.name}!",
+        "user_id": user_db.id  # add this
+    }
 
 
 @user_router.get("/petsitters/nearby")

@@ -72,3 +72,14 @@ class PetsitterPublic(BaseModel):
     pets: Optional[bool]
     drives: Optional[bool]
     smoker: Optional[bool]
+
+class PetCreate(BaseModel):
+    name: str
+    breed: str
+    animal: str
+    owner_id: int
+
+class PetUpdate(BaseModel):
+    name: Optional[str]
+    breed: Optional[str]
+    animal: Optional[str]

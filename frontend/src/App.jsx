@@ -3,7 +3,7 @@ import Login from './Login';
 import Register from './Register'; 
 import Dashboard from './Dashboard';
 import SitterProfile from './SitterProfile';
-import MyPets from './CompleteOwner.jsx';
+import MyPets from './MyPets.jsx';
 import SitterDetails from './SitterDetails';
 import Home from "./Home";
 import './App.css';

@@ -5,6 +5,7 @@ from app.user import user_router
 
 from app.timeslot import timeslot_router
 from app.booking import booking_router
+from app.pets import pet_router
 
 app = FastAPI()
 
@@ -21,6 +22,7 @@ app.add_middleware(
 app.include_router(user_router, tags=["user"])
 app.include_router(timeslot_router, tags=["timeslot"])
 app.include_router(booking_router, tags=["booking"])
+app.include_router(pet_router, tags=["pets"])
 
 # Root endpoint
 @app.get("/")

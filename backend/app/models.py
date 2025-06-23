@@ -48,6 +48,8 @@ class Owner(Base):
     area = Column(String(40), nullable=True)
     gender = Column(Boolean, nullable=True)
     pets = Column(String(255), nullable=True)
+    
+    pets = relationship("Pet", back_populates="owner", cascade="all, delete")
 
     bookings = relationship("Booking", back_populates="owner")
 
@@ -83,3 +85,14 @@ class Booking(Base):
     __table_args__ = (
         UniqueConstraint('timeslot_id', name='uq_timeslot_id'),
     )
+
+class Pet(Base):
+    __tablename__ = "pets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    breed = Column(String(100), nullable=True)
+    animal = Column(String(50), nullable=False)
+    owner_id = Column(Integer, ForeignKey("owners.id", ondelete="CASCADE"), nullable=False)
+
+    owner = relationship("Owner", back_populates="pets")
