@@ -161,11 +161,11 @@ async def login_petsitter(user: UserLogin, db: AsyncSession = Depends(get_db)):
 
 @user_router.get("/petsitters/nearby")
 async def get_nearby_petsitters(user_id: int, db: AsyncSession = Depends(get_db)):
-    user = await db.get(Petsitter, user_id)  # ✅ FIX: Use actual ORM model
-    if not user or not user.zipcode:
-        raise HTTPException(status_code=404, detail="User or zipcode not found")
+    owner = await db.get(Owner, user_id)
+    if not owner or not owner.zipcode:
+        raise HTTPException(status_code=404, detail="Owner not found or zipcode missing")
 
-    prefix = user.zipcode[:3]
+    prefix = owner.zipcode[:3]
     like_pattern = f"{prefix}%"
 
     result = await db.execute(
@@ -175,6 +175,25 @@ async def get_nearby_petsitters(user_id: int, db: AsyncSession = Depends(get_db)
 
     return sitters
 
+
+@user_router.get("/user/{role}/{user_id}")
+async def get_user_data(role: str, user_id: int, db: AsyncSession = Depends(get_db)):
+    if role == "owner":
+        result = await db.execute(select(Owner).where(Owner.id == user_id))
+        user = result.scalar_one_or_none()
+        if not user:
+            raise HTTPException(status_code=404, detail="Owner not found")
+        return user
+
+    elif role == "petsitter":
+        result = await db.execute(select(Petsitter).where(Petsitter.id == user_id))
+        user = result.scalar_one_or_none()
+        if not user:
+            raise HTTPException(status_code=404, detail="Petsitter not found")
+        return user
+
+    else:
+        raise HTTPException(status_code=400, detail="Invalid role: must be 'owner' or 'petsitter'")
 
 @user_router.get("/petsitters/{petsitter_id}", response_model=PetsitterPublic)
 async def get_petsitter_profile(petsitter_id: int, db: AsyncSession = Depends(get_db)):
