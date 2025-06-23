@@ -1,0 +1,40 @@
+.navbar {
+  width: 100vw;
+  height: 60px;
+  background: #ffe082;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.navbar-center {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e65100;
+  flex: 1;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.navbar-logout {
+  position: absolute;
+  right: 32px;
+  top: 12px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  background: #e65100;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.navbar-logout:hover {
+  background: #bf360c;
+}

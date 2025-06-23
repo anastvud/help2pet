@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Login from './Login';      
-import Register from './Register'; 
+import Login from './Login';
+import Register from './Register';
 import Dashboard from './Dashboard';
 import SitterProfile from './SitterProfile';
 import MyPets from './MyPets.jsx';
@@ -11,7 +11,7 @@ import CompleteOwner from "./CompleteOwner.jsx";
 import CompleteSitter from "./CompleteSitter.jsx";
 import Booking from "./Booking.jsx";
 import PetsitterBookings from "./PetsitterBookings.jsx";
-
+import Navbar from "./Navbar";
 import logo from './assets/logo.png';
 
 function Welcome() {
@@ -21,7 +21,6 @@ function Welcome() {
         <img src={logo} alt="Help2Pet Logo" className="logo" />
         <h1 className="title">Welcome to Help2Pet!</h1>
       </header>
-
       <div className="welcome-container">
         <h1 className="title">Start with:</h1>
         <div className="button-group">
@@ -33,10 +32,19 @@ function Welcome() {
   );
 }
 
+const noNavbarRoutes = [
+  "/", "/login", "/register", "/complete-owner", "/complete-sitter"
+];
 
-function App() {
+import { useLocation } from "react-router-dom";
+
+function AppContent() {
+  const location = useLocation();
+  const showNavbar = !noNavbarRoutes.includes(location.pathname);
+
   return (
-    <Router>
+    <>
+      {showNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
@@ -47,13 +55,18 @@ function App() {
         <Route path="/sitter-details/:id" element={<SitterDetails />} />
         <Route path="/book/:id" element={<Booking />} />
         <Route path="/my-bookings" element={<PetsitterBookings />} />
-
-
         <Route path="/sitter/:id" element={<SitterProfile />} />
         <Route path="/my-pets" element={<MyPets />} />
-
         <Route path="/home" element={<Home />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
