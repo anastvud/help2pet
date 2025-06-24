@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-// import "./Dashboard.css";
+import "./form.css"; // ✅ Shared styles with CompleteOwner, etc.
 
 function Dashboard() {
   const [sitters, setSitters] = useState([]);
@@ -8,6 +8,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -30,7 +31,6 @@ function Dashboard() {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  // Update filtered sitters when search term changes
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredSitters(sitters);
@@ -45,44 +45,40 @@ function Dashboard() {
     }
   }, [searchTerm, sitters]);
 
-  if (loading) return <p>Loading sitters…</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <div className="form-page"><p>Loading sitters…</p></div>;
+  if (error) return <div className="form-page"><p>Error: {error}</p></div>;
 
   return (
-    <div>
-      <h2>Available Pet Sitters Near You</h2>
-      <input
-        type="text"
-        placeholder="Search by Zip code or Area"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{
-          padding: "0.5rem",
-          marginBottom: "1rem",
-          width: "100%",
-          maxWidth: "400px",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          fontSize: "1rem"
-        }}
-      />
-      <div className="dashboard">
-        {filteredSitters.length > 0 ? (
-          filteredSitters.map((sitter) => (
-            <Link
-              to={`/sitter-details/${sitter.id}`}
-              key={sitter.id}
-              className="sitter-card"
-            >
-              <h3>{sitter.name} {sitter.surname}</h3>
-              <p>📍 {sitter.zipcode} - {sitter.area}</p>
-              <p>💰 {sitter.price_hour} PLN/hr</p>
-              <p>⭐ {sitter.rating ?? "New"}</p>
-            </Link>
-          ))
-        ) : (
-          <p>No sitters found in this area.</p>
-        )}
+    <div className="form-page">
+      <div className="form-container">
+        <h2>Available Pet Sitters Near You</h2>
+
+        <input
+          type="text"
+          placeholder="Search by Zip code or Area"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="form-input"
+        />
+
+        <div className="dashboard">
+          {filteredSitters.length > 0 ? (
+            filteredSitters.map((sitter) => (
+              <Link
+                to={`/sitter-details/${sitter.id}`}
+                key={sitter.id}
+                className="sitter-card"
+              >
+                <h3>{sitter.name} {sitter.surname}</h3>
+                <p>📍 {sitter.zipcode} - {sitter.area}</p>
+                <p>💰 {sitter.price_hour} PLN/hr</p>
+                <p>⭐ {sitter.rating ?? "New"}</p>
+              </Link>
+            ))
+          ) : (
+            <p className="no-results">No sitters found in this area.</p>
+          )}
+        </div>
       </div>
     </div>
   );
