@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./form.css"; // ✅ Reuse shared styling
 
 const formatDate = (dateStr) => {
   const date = new Date(dateStr);
@@ -24,7 +25,7 @@ function Booking() {
   const [timeslots, setTimeslots] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeSlotId, setActiveSlotId] = useState(null); // for hover or click
+  const [activeSlotId, setActiveSlotId] = useState(null);
   const [petDetails, setPetDetails] = useState("");
   const ownerId = localStorage.getItem("userId");
 
@@ -78,7 +79,6 @@ function Booking() {
       setActiveSlotId(null);
       window.location.reload();
 
-
       setTimeslots((prev) => {
         const updated = { ...prev };
         updated[slot.start_time.split("T")[0]] = updated[
@@ -94,98 +94,92 @@ function Booking() {
     }
   };
 
-  if (loading) return <p>Loading timeslots...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) return <div className="form-page"><p>Loading timeslots...</p></div>;
+  if (error) return <div className="form-page"><p style={{ color: "red" }}>{error}</p></div>;
   if (Object.keys(timeslots).length === 0)
-    return <p>No available timeslots found.</p>;
+    return <div className="form-page"><p>No available timeslots found.</p></div>;
 
   return (
-    <div className="booking-container">
-      <h2>Available Timeslots</h2>
+    <div className="form-page">
+      <div className="form-container">
+        <h2>Available Timeslots</h2>
 
-      <div className="timeslot-group">
-        {Object.entries(timeslots).map(([date, slots]) => (
-          <div key={date} className="timeslot-card">
-            <h3>{formatDate(date)}</h3>
-            <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-              {slots.map((slot) => {
-                const isBooked = slot.is_booked;
-                const isActive = activeSlotId === slot.id;
+        <div className="dashboard">
+          {Object.entries(timeslots).map(([date, slots]) => (
+            <div key={date} className="sitter-card">
+              <h3>{formatDate(date)}</h3>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {slots.map((slot) => {
+                  const isBooked = slot.is_booked;
+                  const isActive = activeSlotId === slot.id;
 
-                return (
-                  <li
-                    key={slot.id}
-                    onMouseEnter={() => setActiveSlotId(slot.id)}
-                    onMouseLeave={() =>
-                      activeSlotId !== slot.id && setActiveSlotId(null)
-                    }
-                    style={{
-                      backgroundColor: isBooked
-                        ? "#d3d3d3"
-                        : isActive
-                        ? "#e6f0ff"
-                        : "#f9f9f9",
-                      color: isBooked ? "#777" : "#000",
-                      padding: "0.5rem",
-                      borderRadius: "6px",
-                      marginBottom: "0.5rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.3rem",
-                      transition: "background-color 0.3s, color 0.3s",
-                      cursor: isBooked ? "not-allowed" : "pointer",
-                      userSelect: "none",
-                    }}
-                  >
-                    <div
+                  return (
+                    <li
+                      key={slot.id}
+                      onMouseEnter={() => setActiveSlotId(slot.id)}
+                      onMouseLeave={() =>
+                        activeSlotId !== slot.id && setActiveSlotId(null)
+                      }
                       style={{
+                        backgroundColor: isBooked
+                          ? "rgba(200,200,200,0.3)"
+                          : isActive
+                          ? "rgba(204, 255, 229, 0.4)"
+                          : "rgba(255, 255, 255, 0.2)",
+                        color: isBooked ? "#888" : "#2e5d32",
+                        padding: "0.7rem",
+                        borderRadius: "12px",
+                        marginBottom: "0.7rem",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        backdropFilter: "blur(10px)",
+                        transition: "background 0.3s, color 0.3s",
+                        cursor: isBooked ? "not-allowed" : "pointer",
                         display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        flexDirection: "column",
+                        gap: "0.5rem",
                       }}
                     >
-                      <span>
-                        {formatTime(slot.start_time)} –{" "}
-                        {formatTime(slot.end_time)}
-                      </span>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <span>
+                          {formatTime(slot.start_time)} –{" "}
+                          {formatTime(slot.end_time)}
+                        </span>
+
+                        {!isBooked && isActive && (
+                          <button
+                            onClick={() => bookNow(slot)}
+                            className="form-button"
+                            style={{ marginLeft: "1rem", marginTop: "0.5rem" }}
+                          >
+                            Book Now
+                          </button>
+                        )}
+                      </div>
 
                       {!isBooked && isActive && (
-                        <button
-                          onClick={() => bookNow(slot)}
-                          style={{
-                            padding: "0.3rem 0.6rem",
-                            backgroundColor: "#007bff",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Book Now
-                        </button>
+                        <textarea
+                          rows={2}
+                          placeholder="Add pet details (name, age, needs...)"
+                          value={petDetails}
+                          onChange={(e) => setPetDetails(e.target.value)}
+                          className="form-input"
+                          style={{ resize: "none" }}
+                        />
                       )}
-                    </div>
-
-                    {!isBooked && isActive && (
-                      <textarea
-                        rows={2}
-                        placeholder="Add pet details (name, age, needs...)"
-                        value={petDetails}
-                        onChange={(e) => setPetDetails(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "0.4rem",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                        }}
-                      />
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
