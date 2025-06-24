@@ -263,74 +263,71 @@ function PetsitterBookings() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="petsitter-bookings" style={{ padding: "1rem" }}>
-      <h2>My Timeslots</h2>
+    <div className="form-page">
+      <div className="form-container">
+        <h2>My Timeslots</h2>
 
-      <button
-        onClick={() => setShowForm((prev) => !prev)}
-        style={{ marginBottom: "1rem", padding: "0.5rem" }}
-      >
-        {showForm ? "Cancel" : "+ Create New Timeslot"}
-      </button>
+        <button onClick={() => setShowForm((prev) => !prev)}>
+          {showForm ? "Cancel" : "+ Create New Timeslot"}
+        </button>
 
-      {showForm && (
-        <form onSubmit={handleCreateTimeslot} style={{ marginBottom: "1rem" }}>
-          <label>
-            Start Time:
-            <input
-              type="datetime-local"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              required
-            />
-          </label>
-          <label style={{ marginLeft: "1rem" }}>
-            End Time:
-            <input
-              type="datetime-local"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              required
-            />
-          </label>
-          <button type="submit" style={{ marginLeft: "1rem" }}>
-            Create
-          </button>
-        </form>
-      )}
+        {showForm && (
+          <form onSubmit={handleCreateTimeslot} style={{ marginTop: "10px" }}>
+            <label style={{ fontSize: "18px", marginBottom: "4px" }}>
+              Start Time:
+              <input
+                type="datetime-local"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                required
+              />
+            </label>
+            <label style={{ fontSize: "18px", marginBottom: "8px" }}>
+              End Time:
+              <input
+                type="datetime-local"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                required
+              />
+            </label>
+            <button type="submit">Create</button>
+          </form>
+        )}
 
-      <div style={{ marginBottom: "2rem" }}>
-        <h3>Free Timeslots</h3>
-        {timeslots.filter((s) => !s.is_booked).length === 0 ? (
-          <p>No free timeslots.</p>
-        ) : (
-          <ul>
-            {timeslots
-              .filter((slot) => !slot.is_booked)
-              .map((slot) => (
-                <li key={slot.id}>
-                  {formatDateTime(slot.start_time)} – {formatDateTime(slot.end_time)}
+        <div style={{ marginTop: "20px" }}>
+          <h3 style={{ fontSize: "22px" }}>Free Timeslots</h3>
+          {timeslots.filter((s) => !s.is_booked).length === 0 ? (
+            <p>No free timeslots.</p>
+          ) : (
+            <ul style={{ paddingLeft: "20px" }}>
+              {timeslots
+                .filter((slot) => !slot.is_booked)
+                .map((slot) => (
+                  <li key={slot.id} style={{ marginBottom: "6px" }}>
+                    {formatDateTime(slot.start_time)} – {formatDateTime(slot.end_time)}
+                  </li>
+                ))}
+            </ul>
+          )}
+        </div>
+
+        <div style={{ marginTop: "20px" }}>
+          <h3 style={{ fontSize: "22px" }}>Booked Timeslots</h3>
+          {bookings.length === 0 ? (
+            <p>No booked timeslots.</p>
+          ) : (
+            <ul style={{ paddingLeft: "20px" }}>
+              {bookings.map((booking) => (
+                <li key={booking.booking_id} style={{ marginBottom: "8px" }}>
+                  {formatDateTime(booking.start_time)} – {formatDateTime(booking.end_time)}
+                  <br />
+                  <strong>Owner:</strong> {booking.owner.name} {booking.owner.surname}
                 </li>
               ))}
-          </ul>
-        )}
-      </div>
-
-      <div>
-        <h3>Booked Timeslots</h3>
-        {bookings.length === 0 ? (
-          <p>No booked timeslots.</p>
-        ) : (
-          <ul>
-            {bookings.map((booking) => (
-              <li key={booking.booking_id}>
-                {formatDateTime(booking.start_time)} – {formatDateTime(booking.end_time)}
-                <br />
-                <strong>Owner:</strong> {booking.owner.name} {booking.owner.surname}
-              </li>
-            ))}
-          </ul>
-        )}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
