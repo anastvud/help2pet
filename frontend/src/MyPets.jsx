@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000'; // Update this if your backend uses a different URL
+const API_URL = 'http://localhost:8000'; // Adjust if needed
 
 const MyPets = () => {
   const [ownerId, setOwnerId] = useState(null);
@@ -37,32 +37,32 @@ const MyPets = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handleAddPet = async () => {
-  const petData = {
-    name: form.name,
-    breed: form.breed,
-    animal: form.animal,
-    owner_id: ownerId,
-  };
+  const handleAddPet = async () => {
+    const petData = {
+      name: form.name,
+      breed: form.breed,
+      animal: form.animal,
+      owner_id: ownerId,
+    };
 
-  try {
-    const res = await fetch(`${API_URL}/pets`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(petData),
-    });
+    try {
+      const res = await fetch(`${API_URL}/pets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(petData),
+      });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.detail || 'Failed to add pet');
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || 'Failed to add pet');
+      }
+
+      setForm({ name: '', breed: '', animal: '' });
+      fetchPets();
+    } catch (error) {
+      alert(error.message);
     }
-
-    setForm({ name: '', breed: '', animal: '' });
-    fetchPets();
-  } catch (error) {
-    alert(error.message);
-  }
-};
+  };
 
   const handleDeletePet = async (id) => {
     try {
@@ -90,31 +90,56 @@ const handleAddPet = async () => {
   };
 
   return (
-    <div>
-      <h2>My Pets</h2>
-      {pets.length === 0 ? (
-        <p>No pets found.</p>
-      ) : (
-        <ul>
-          {pets.map(pet => (
-            <li key={pet.id}>
-              <strong>{pet.name}</strong> ({pet.animal}) {pet.breed && <>- {pet.breed}</>}
-              <button onClick={() => handleEditPet(pet)}>Edit</button>
-              <button onClick={() => handleDeletePet(pet.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="form-page">
+      <div className="form-container">
+        <h2>My Pets</h2>
 
-      <h3>{editingPetId ? 'Update Pet' : 'Add New Pet'}</h3>
-      <input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
-      <input name="breed" placeholder="Breed" value={form.breed} onChange={handleChange} />
-      <input name="animal" placeholder="Animal" value={form.animal} onChange={handleChange} />
-      {editingPetId ? (
-        <button onClick={handleUpdatePet}>Update</button>
-      ) : (
-        <button onClick={handleAddPet}>Add</button>
-      )}
+        {pets.length === 0 ? (
+          <p className="message">No pets found.</p>
+        ) : (
+          <ul style={{ paddingLeft: '20px', fontSize: '20px' }}>
+            {pets.map(pet => (
+              <li key={pet.id} style={{ marginBottom: '8px' }}>
+                <strong>{pet.name}</strong> ({pet.animal}) {pet.breed && <>- {pet.breed}</>}
+                <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                  <button onClick={() => handleEditPet(pet)}>Edit</button>
+                  <button onClick={() => handleDeletePet(pet.id)}>Delete</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <h3 style={{ marginTop: '20px', marginBottom: '10px', fontSize: '22px' }}>
+          {editingPetId ? 'Update Pet' : 'Add New Pet'}
+        </h3>
+
+        <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column' }}>
+          <input
+            name="name"
+            placeholder="Name"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <input
+            name="breed"
+            placeholder="Breed"
+            value={form.breed}
+            onChange={handleChange}
+          />
+          <input
+            name="animal"
+            placeholder="Animal"
+            value={form.animal}
+            onChange={handleChange}
+          />
+          {editingPetId ? (
+            <button onClick={handleUpdatePet}>Update</button>
+          ) : (
+            <button onClick={handleAddPet}>Add</button>
+          )}
+        </form>
+      </div>
     </div>
   );
 };
