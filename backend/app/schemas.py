@@ -33,7 +33,6 @@ class OwnerAdditionalInfo(BaseModel):
     zipcode: Optional[str]
     area: Optional[str]
     gender: Optional[bool]
-    pets: Optional[str]
 
 class UserLogin(BaseModel):
     username: str

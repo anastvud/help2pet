@@ -10,16 +10,6 @@ function CompleteOwner() {
     gender: '', // true or false (boolean)
   });
 
-  const [petForm, setPetForm] = useState({
-    name: '',
-    breed: '',
-    age: '',
-    medical: '',
-    diet: '',
-    notes: '',
-  });
-
-  const [pets, setPets] = useState([]);
   const [message, setMessage] = useState(null);
 
   const ownerId = localStorage.getItem('userId');
@@ -34,35 +24,11 @@ function CompleteOwner() {
     setOwnerForm(prev => ({ ...prev, gender: e.target.value === 'true' }));
   };
 
-  const handlePetChange = (e) => {
-    const { name, value } = e.target;
-    setPetForm(prev => ({ ...prev, [name]: value }));
-  };
-
-  const addPet = () => {
-    if (petForm.name.trim() !== '') {
-      setPets([...pets, petForm]);
-      setPetForm({
-        name: '',
-        breed: '',
-        age: '',
-        medical: '',
-        diet: '',
-        notes: '',
-      });
-    }
-  };
-
   const handleSubmit = async () => {
-    const petsString = pets
-      .map(p =>
-        `${p.name} (${p.breed}) - A: ${p.age}, M: ${p.medical}, D: ${p.diet}, N: ${p.notes}`
-      )
-      .join('; ');
-
     const payload = {
-      ...ownerForm,
-      pets: petsString,
+      zipcode: ownerForm.zipcode,
+      area: ownerForm.area,
+      gender: ownerForm.gender,
     };
 
     try {
@@ -123,9 +89,7 @@ function CompleteOwner() {
           </label>
         </div>
 
-
-
-        <button onClick={handleSubmit}>Submit All Info</button>
+        <button onClick={handleSubmit}>Submit</button>
       </div>
     </div>
   );
