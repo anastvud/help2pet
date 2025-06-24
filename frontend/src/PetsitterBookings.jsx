@@ -1,179 +1,17 @@
-// import React, { useEffect, useState } from "react";
-//
-// const formatDateTime = (datetimeStr) => {
-//   const date = new Date(datetimeStr);
-//   return date.toLocaleString(undefined, {
-//     weekday: "short",
-//     year: "numeric",
-//     month: "short",
-//     day: "numeric",
-//     hour: "2-digit",
-//     minute: "2-digit",
-//     hour12: false,
-//   });
-// };
-//
-// function PetsitterBookings() {
-//   const sitterId = localStorage.getItem("userId");
-//   const [timeslots, setTimeslots] = useState([]);
-//   const [bookings, setBookings] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//
-//   const [showForm, setShowForm] = useState(false);
-//   const [startTime, setStartTime] = useState("");
-//   const [endTime, setEndTime] = useState("");
-//
-//   const fetchTimeslots = async () => {
-//     try {
-//       const res = await fetch(`http://127.0.0.1:8000/timeslots/${sitterId}`);
-//       if (!res.ok) throw new Error("Failed to fetch timeslots");
-//       const data = await res.json();
-//       setTimeslots(data);
-//     } catch (err) {
-//       setError(err.message);
-//     }
-//   };
-//
-//   const fetchBookingsWithOwners = async () => {
-//     try {
-//       const res = await fetch(`http://127.0.0.1:8000/bookings/sitter/${sitterId}`);
-//       if (!res.ok) throw new Error("Failed to fetch bookings");
-//       const data = await res.json();
-//       setBookings(data);
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-//
-//   useEffect(() => {
-//     async function loadAll() {
-//       setLoading(true);
-//       await fetchTimeslots();
-//       await fetchBookingsWithOwners();
-//       setLoading(false);
-//     }
-//     loadAll();
-//   }, [sitterId]);
-//
-//   const handleCreateNewTimeslot = async (e) => {
-//     e.preventDefault();
-//
-//     try {
-//       const timeslotData = {
-//         sitter_id: Number(sitterId),
-//         start_time: new Date(startTime).toISOString(),
-//         end_time: new Date(endTime).toISOString(),
-//       };
-//
-//       const res = await fetch("http://127.0.0.1:8000/timeslots", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(timeslotData),
-//       });
-//
-//       if (!res.ok) throw new Error("Failed to create timeslot");
-//
-//       await res.json();
-//       alert("Timeslot created!");
-//       setStartTime("");
-//       setEndTime("");
-//       setShowForm(false);
-//       fetchTimeslots();
-//     } catch (err) {
-//       alert(`Error: ${err.message}`);
-//     }
-//   };
-//
-//   if (loading) return <p>Loading...</p>;
-//   if (error) return <p style={{ color: "red" }}>{error}</p>;
-//
-//   return (
-//     <div className="petsitter-bookings" style={{ padding: "1rem" }}>
-//       <h2>My Timeslots</h2>
-//
-//       <button
-//         onClick={() => setShowForm((prev) => !prev)}
-//         style={{ marginBottom: "1rem", padding: "0.5rem" }}
-//       >
-//         {showForm ? "Cancel" : "+ Create New Timeslot"}
-//       </button>
-//
-//       {showForm && (
-//         <form onSubmit={handleCreateNewTimeslot} style={{ marginBottom: "1rem" }}>
-//           <label>
-//             Start Time:
-//             <input
-//               type="datetime-local"
-//               value={startTime}
-//               onChange={(e) => setStartTime(e.target.value)}
-//               required
-//             />
-//           </label>
-//           <label style={{ marginLeft: "1rem" }}>
-//             End Time:
-//             <input
-//               type="datetime-local"
-//               value={endTime}
-//               onChange={(e) => setEndTime(e.target.value)}
-//               required
-//             />
-//           </label>
-//           <button type="submit" style={{ marginLeft: "1rem" }}>
-//             Create
-//           </button>
-//         </form>
-//       )}
-//
-//       <div style={{ marginBottom: "2rem" }}>
-//         <h3>Free Timeslots</h3>
-//         {timeslots.filter((s) => !s.is_booked).length === 0 ? (
-//           <p>No free timeslots.</p>
-//         ) : (
-//           <ul>
-//             {timeslots
-//               .filter((slot) => !slot.is_booked)
-//               .map((slot) => (
-//                 <li key={slot.id}>
-//                   {formatDateTime(slot.start_time)} – {formatDateTime(slot.end_time)}
-//                 </li>
-//               ))}
-//           </ul>
-//         )}
-//       </div>
-//
-//       <div>
-//         <h3>Booked Timeslots</h3>
-//         {bookings.length === 0 ? (
-//           <p>No booked timeslots.</p>
-//         ) : (
-//           <ul>
-//             {bookings.map((booking) => (
-//               <li key={booking.booking_id}>
-//                 {formatDateTime(booking.start_time)} – {formatDateTime(booking.end_time)}
-//                 <br />
-//                 <strong>Owner:</strong> {booking.owner.name} {booking.owner.surname}
-//               </li>
-//             ))}
-//           </ul>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-//
-// export default PetsitterBookings;
-
-
 import React, { useEffect, useState } from "react";
 
-const formatDateTime = (datetimeStr) => {
-  const date = new Date(datetimeStr);
-  return date.toLocaleString(undefined, {
-    weekday: "short",
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(undefined, {
+    weekday: "long",
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
+  });
+};
+
+const formatTime = (datetimeStr) => {
+  return new Date(datetimeStr).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -209,18 +47,22 @@ function PetsitterBookings() {
       const data = await res.json();
       setBookings(data);
     } catch (err) {
-      console.error(err);
+      setError(err.message);
     }
   };
 
   useEffect(() => {
     async function loadAll() {
       setLoading(true);
-      await fetchTimeslots();
-      await fetchBookingsWithOwners();
+      setError(null);
+      await Promise.all([fetchTimeslots(), fetchBookingsWithOwners()]);
       setLoading(false);
     }
-    loadAll();
+    if (sitterId) loadAll();
+    else {
+      setError("No sitter ID found");
+      setLoading(false);
+    }
   }, [sitterId]);
 
   const handleCreateTimeslot = async (e) => {
@@ -259,6 +101,33 @@ function PetsitterBookings() {
     }
   };
 
+  // Group bookings by date
+  const groupedBookings = bookings.reduce((acc, booking) => {
+    const dateKey = booking.start_time.split("T")[0];
+    if (!acc[dateKey]) acc[dateKey] = [];
+    acc[dateKey].push(booking);
+    return acc;
+  }, {});
+
+  // Group free timeslots by date
+  const groupedFreeSlots = timeslots
+    .filter((slot) => !slot.is_booked)
+    .reduce((acc, slot) => {
+      const dateKey = slot.start_time.split("T")[0];
+      if (!acc[dateKey]) acc[dateKey] = [];
+      acc[dateKey].push(slot);
+      return acc;
+    }, {});
+
+  // Sort dates ascending for both
+  const sortedBookingDates = Object.keys(groupedBookings).sort(
+    (a, b) => new Date(a) - new Date(b)
+  );
+
+  const sortedFreeDates = Object.keys(groupedFreeSlots).sort(
+    (a, b) => new Date(a) - new Date(b)
+  );
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
@@ -267,13 +136,13 @@ function PetsitterBookings() {
       <div className="form-container">
         <h2>My Timeslots</h2>
 
-        <button onClick={() => setShowForm((prev) => !prev)}>
+        <button onClick={() => setShowForm((prev) => !prev)} className="form-button">
           {showForm ? "Cancel" : "+ Create New Timeslot"}
         </button>
 
         {showForm && (
           <form onSubmit={handleCreateTimeslot} style={{ marginTop: "10px" }}>
-            <label style={{ fontSize: "18px", marginBottom: "4px" }}>
+            <label className="label">
               Start Time:
               <input
                 type="datetime-local"
@@ -282,7 +151,7 @@ function PetsitterBookings() {
                 required
               />
             </label>
-            <label style={{ fontSize: "18px", marginBottom: "8px" }}>
+            <label className="label">
               End Time:
               <input
                 type="datetime-local"
@@ -291,43 +160,59 @@ function PetsitterBookings() {
                 required
               />
             </label>
-            <button type="submit">Create</button>
+            <button type="submit" className="form-button">
+              Create
+            </button>
           </form>
         )}
 
-        <div style={{ marginTop: "20px" }}>
-          <h3 style={{ fontSize: "22px" }}>Free Timeslots</h3>
-          {timeslots.filter((s) => !s.is_booked).length === 0 ? (
+        <section className="timeslots-section">
+          <h3>Free Timeslots</h3>
+          {sortedFreeDates.length === 0 ? (
             <p>No free timeslots.</p>
           ) : (
-            <ul style={{ paddingLeft: "20px" }}>
-              {timeslots
-                .filter((slot) => !slot.is_booked)
-                .map((slot) => (
-                  <li key={slot.id} style={{ marginBottom: "6px" }}>
-                    {formatDateTime(slot.start_time)} – {formatDateTime(slot.end_time)}
-                  </li>
-                ))}
-            </ul>
+            sortedFreeDates.map((date) => (
+              <div key={date} className="booking-day-group">
+                <h4 className="booking-date">{formatDate(date)}</h4>
+                <ul className="booking-list">
+                  {groupedFreeSlots[date].map((slot) => (
+                    <li key={slot.id} className="booking-item free">
+                      <span className="booking-time">
+                        {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
+                      </span>
+                      <span className="booking-owner free-label">Free</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
           )}
-        </div>
+        </section>
 
-        <div style={{ marginTop: "20px" }}>
-          <h3 style={{ fontSize: "22px" }}>Booked Timeslots</h3>
-          {bookings.length === 0 ? (
+        <section className="bookings-section" style={{ marginTop: "2rem" }}>
+          <h3>Booked Timeslots</h3>
+          {sortedBookingDates.length === 0 ? (
             <p>No booked timeslots.</p>
           ) : (
-            <ul style={{ paddingLeft: "20px" }}>
-              {bookings.map((booking) => (
-                <li key={booking.booking_id} style={{ marginBottom: "8px" }}>
-                  {formatDateTime(booking.start_time)} – {formatDateTime(booking.end_time)}
-                  <br />
-                  <strong>Owner:</strong> {booking.owner.name} {booking.owner.surname}
-                </li>
-              ))}
-            </ul>
+            sortedBookingDates.map((date) => (
+              <div key={date} className="booking-day-group">
+                <h4 className="booking-date">{formatDate(date)}</h4>
+                <ul className="booking-list">
+                  {groupedBookings[date].map((booking) => (
+                    <li key={booking.booking_id} className="booking-item booked">
+                      <span className="booking-time">
+                        {formatTime(booking.start_time)} - {formatTime(booking.end_time)}
+                      </span>
+                      <span className="booking-owner">
+                        Owner: {booking.owner.name} {booking.owner.surname}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

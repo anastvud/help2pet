@@ -17,34 +17,39 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await fetch(`http://localhost:8000/login/${role}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(form),
-      });
+  try {
+    const response = await fetch(`http://localhost:8000/login/${role}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok) {
-        setMessage(`${data.message}`);
-        if (data.user_id) {
-          localStorage.setItem('userId', data.user_id);
-          localStorage.setItem('role', role);
-        }
-        navigate('/home');
-      } else {
-        setMessage(data.detail || 'Login failed');
+    if (response.ok) {
+      setMessage(`${data.message}`);
+      if (data.user_id) {
+        localStorage.setItem('userId', data.user_id);
+        localStorage.setItem('role', role);
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setMessage('Network error');
+      // Navigate based on role:
+      if (role === 'petsitter') {
+        navigate('/my-bookings');
+      } else {
+        navigate('/home');
+      }
+    } else {
+      setMessage(data.detail || 'Login failed');
     }
-  };
+  } catch (error) {
+    console.error('Login error:', error);
+    setMessage('Network error');
+  }
+};
 
   return (
     <div className="form-page">

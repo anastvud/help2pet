@@ -1,0 +1,107 @@
+.form-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  max-width: 650px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+h2, h3, h4 {
+  color: #e65100;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #bf360c;
+}
+
+input[type="datetime-local"] {
+  margin-top: 0.3rem;
+  padding: 8px 10px;
+  font-size: 1rem;
+  border: 2px solid #e65100;
+  border-radius: 8px;
+  outline-offset: 2px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="datetime-local"]:focus {
+  border-color: #ff6f00;
+}
+
+.form-button {
+  background-color: #ff6f00;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+  background-color: #e65100;
+}
+
+.timeslots-section,
+.bookings-section {
+  margin-top: 2rem;
+}
+
+.timeslot-list,
+.booking-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.timeslot-item,
+.booking-item {
+  background: #fff;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(230, 81, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #4a2c0a;
+  font-weight: 600;
+}
+
+.booking-day-group {
+  margin-bottom: 2rem;
+  border-left: 4px solid #ff6f00;
+  padding-left: 12px;
+  background: rgba(255, 111, 0, 0.1);
+  border-radius: 12px;
+}
+
+.booking-date {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: #bf360c;
+  font-weight: 700;
+}
+
+.booking-time {
+  font-weight: 600;
+  color: #e65100;
+}
+
+.booking-owner {
+  font-style: italic;
+  color: #6d4c41;
+  margin-left: 12px;
+  white-space: nowrap;
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./form.css"; // ✅ Shared styles with CompleteOwner, etc.
+import "./form.css";
+import "./dashboard.css"; // ✅ new CSS for card layout
 
 function Dashboard() {
   const [sitters, setSitters] = useState([]);
@@ -61,7 +62,7 @@ function Dashboard() {
           className="form-input"
         />
 
-        <div className="dashboard">
+        <div className="sitter-grid">
           {filteredSitters.length > 0 ? (
             filteredSitters.map((sitter) => (
               <Link

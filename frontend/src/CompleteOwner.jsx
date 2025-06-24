@@ -41,7 +41,7 @@ function CompleteOwner() {
       );
 
       setMessage('Profile updated: ' + response.data.message);
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/home'), 1500);
     } catch (error) {
       console.error(error);
       setMessage('Failed to update profile.');

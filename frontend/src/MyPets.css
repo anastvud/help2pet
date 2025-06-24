@@ -1,0 +1,174 @@
+/* Full page wrapper with background image */
+.form-page {
+  min-height: 100vh;
+  max-height: 90vh;       /* Limit max height */
+  width: 100vw;
+  padding: 60px 2rem 2rem; /* leave top padding for navbar space */
+  box-sizing: border-box;
+  background-image: url('/assets/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Container to center and constrain form width */
+.form-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  width: 100%;
+
+  max-width: 650px;
+  max-height: 100%;        /* Allow container to fill parent max height */
+  overflow-y: auto;        /* Scroll vertically if content is too tall */
+  backdrop-filter: blur(6px);
+  box-sizing: border-box;
+}
+
+/* Scrollbar styles for better UX (optional) */
+.form-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-container::-webkit-scrollbar-thumb {
+  background-color: rgba(230, 81, 0, 0.5);
+  border-radius: 4px;
+}
+
+.form-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Rest of your styles remain unchanged */
+.form-container h2 {
+  font-size: 2.4rem;
+  color: #e65100;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.message {
+  font-size: 1.2rem;
+  font-style: italic;
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+
+.form-container ul {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.form-container ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.8rem;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(230, 81, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.form-container ul li:hover {
+  box-shadow: 0 4px 12px rgba(230, 81, 0, 0.3);
+}
+
+.pet-info {
+  font-weight: 600;
+  color: #bf360c;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pet-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-shrink: 0;
+}
+
+.pet-actions button {
+  background-color: #ff6f00;
+  border: none;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  user-select: none;
+}
+
+.pet-actions button:hover {
+  background-color: #e65100;
+}
+
+.form-container h3 {
+  font-size: 1.5rem;
+  color: #e65100;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+form {
+  gap: 0.6rem;               /* less space between fields */
+}
+
+.small-form {
+  width: 100%;
+  margin: 0 auto;     /* center horizontally */
+  gap: 0.6rem;        /* less space between inputs */
+  font-size: 0.9rem;  /* slightly smaller text */
+}
+
+form input {
+  padding: 7px 10px;         /* smaller padding */
+  font-size: 0.9rem;         /* slightly smaller font */
+}
+
+form button {
+  padding: 8px 14px;         /* smaller button height */
+  font-size: 1rem;           /* slightly smaller text */
+}
+
+.form-container h3 {
+    font-size: 1.4rem; /* smaller form section title */
+    margin-bottom: 0.75rem;
+}
+
+
+form button:hover {
+  background-color: #e65100;
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 1.5rem 2rem;
+    max-width: 100%;
+  }
+
+  .form-container ul li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .pet-actions {
+    justify-content: flex-start;
+  }
+}

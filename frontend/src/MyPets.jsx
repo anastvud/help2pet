@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './MyPets.css'
 
 const API_URL = 'http://localhost:8000'; // Adjust if needed
 
@@ -114,31 +115,36 @@ const MyPets = () => {
           {editingPetId ? 'Update Pet' : 'Add New Pet'}
         </h3>
 
-        <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column' }}>
-          <input
-            name="name"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleChange}
-          />
-          <input
-            name="breed"
-            placeholder="Breed"
-            value={form.breed}
-            onChange={handleChange}
-          />
-          <input
-            name="animal"
-            placeholder="Animal"
-            value={form.animal}
-            onChange={handleChange}
-          />
-          {editingPetId ? (
-            <button onClick={handleUpdatePet}>Update</button>
-          ) : (
-            <button onClick={handleAddPet}>Add</button>
-          )}
-        </form>
+        <form
+  onSubmit={(e) => e.preventDefault()}
+  className="small-form"
+  style={{ display: 'flex', flexDirection: 'column' }}
+>
+  <input
+    name="name"
+    placeholder="Name"
+    value={form.name}
+    onChange={handleChange}
+  />
+  <input
+    name="breed"
+    placeholder="Breed"
+    value={form.breed}
+    onChange={handleChange}
+  />
+  <input
+    name="animal"
+    placeholder="Animal"
+    value={form.animal}
+    onChange={handleChange}
+  />
+  {editingPetId ? (
+    <button onClick={handleUpdatePet}>Update</button>
+  ) : (
+    <button onClick={handleAddPet}>Add</button>
+  )}
+</form>
+
       </div>
     </div>
   );
